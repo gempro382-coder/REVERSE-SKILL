@@ -16,8 +16,6 @@
 
 ## 2. Static
 
-|------|------|
-| jadx / dnSpy | Android / .NET |
 
 ```text
 □ 定位关键函数（加密/校验/网络/授权）

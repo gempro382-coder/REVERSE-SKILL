@@ -29,11 +29,5 @@ description: Use for authorized reverse engineering of browser extensions (Chrom
 ```
 
 
-|------|------|
-
-
 - `references/extension-analysis.md`
 - `../js-reverse/` `../malware-analysis/`
-
-
-- [ ] Checklist？

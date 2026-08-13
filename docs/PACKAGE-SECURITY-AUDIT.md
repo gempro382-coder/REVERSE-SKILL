@@ -1,32 +1,6 @@
 
 
-|------|------|
-
-
-|----|------|
-| jshookmcp | `@latest` → `@0.3.4` |
-| pentestswarm | `@latest` / docker `:latest` → `@v0.1.0` / `:v0.1.0` |
-| jadx | pin `v1.5.6` + `assetSha256` |
-| apktool | pin `v3.0.2` + `assetSha256` |
-
-
-|----|------|
-
-
 - `Invoke-Expression` / `IEX` / `FromBase64String` / `DownloadString`
-- `DROP DATABASE|TABLE`、`rm -rf /`、`Remove-Item ... C:\Windows`
-
-
-|------|------|------|
-
-
-|------|------|------|
-
-
-|------|------|
-
-
-|----|------|------|
 
 
 ```

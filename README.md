@@ -9,20 +9,10 @@
 
 <br/>
 <p align="center">
-  <a href="#about">About</a> ·
-  <a href="#getting-started">Getting Started</a> ·
-  <a href="#usage">Usage</a> ·
-  <a href="https://reverse.apivix.com/docs/">Tutorial</a> ·
-  <a href="skills/MASTER-ROUTING.md">Fast route</a> ·
-  <a href="skills/routing.md">Routing</a> ·
-  <a href="skills/ops/">Ops contracts</a> ·
-  <a href="README_AI.md">AI Bootstrap</a> ·
-  <a href="#sponsors">Sponsors</a> ·
   <a href="#contributing">Contributing</a>
 </p>
 
 <p align="center">
-  <a href="https://reverse.apivix.com/">Project website</a> ·
   <a href="https://reverse.apivix.com/docs/">Online tutorial</a>
 </p>
 
@@ -53,13 +43,9 @@ User task
 
 ### Current status
 
-| Routing rules | Regression benchmark | Core skill modules | CI platforms | Client model |
-|---:|---:|---:|---|---|
-| 41 (R0–R40) | 163 cases | 42 tracked modules | Windows + Ubuntu | Client-neutral |
 
 The routing core is driven by one structured configuration, validated by cross-platform CI, and kept separate from optional client adapters.
 
-PRIMARY ladder: [skills/MASTER-ROUTING.md](skills/MASTER-ROUTING.md) · Full matrix: [skills/routing.md](skills/routing.md) · Ops: [skills/ops/](skills/ops/)
 
 <br/>
 
@@ -75,7 +61,6 @@ PRIMARY ladder: [skills/MASTER-ROUTING.md](skills/MASTER-ROUTING.md) · Full mat
 
 <p align="left">
   <img src="https://skillicons.dev/icons?i=py,nodejs,powershell,bash,java,docker,git&theme=light" /><br/>
-  <code>IDA Pro</code> · <code>radare2</code> · <code>Ghidra</code>
 </p>
 
 <p align="right">(<a href="#about">back to top</a>)</p>
@@ -86,10 +71,6 @@ PRIMARY ladder: [skills/MASTER-ROUTING.md](skills/MASTER-ROUTING.md) · Full mat
 
 ### Prerequisites
 
-- **Java / JDK** — for jadx and apktool
-- **Node.js 22.12+** — for JS toolchain and MCP servers
-- **Python 3.x** — for Frida and helper scripts
-- **A code AI client** — Claude Code, Codex, Cursor, OpenCode, or another compatible client
 
 ### Installation
 
@@ -99,18 +80,10 @@ PRIMARY ladder: [skills/MASTER-ROUTING.md](skills/MASTER-ROUTING.md) · Full mat
 
 Then refresh the tool index per platform:
 
-| Platform | Command |
-|----------|---------|
-| Windows | `powershell -File skills/scripts/refresh-tool-index.ps1` |
-| Linux / macOS | `bash skills/scripts/refresh-tool-index.sh` |
-| Kali Linux | `bash kali/scripts/refresh-tool-index.sh` |
 
 Check [skills/tool-index.md](skills/tool-index.md) to see detected tools.
 
 Platform-specific docs:
-- **Kali Linux** → [kali/README-kali.md](kali/README-kali.md)
-- **Ubuntu/Debian** → [docs/platforms/linux.md](docs/platforms/linux.md)
-- **macOS** → [docs/platforms/macos.md](docs/platforms/macos.md)
 
 <p align="right">(<a href="#getting-started">back to top</a>)</p>
 
@@ -120,50 +93,9 @@ Platform-specific docs:
 
 ### Supported scenarios
 
-| Scenario | Entry |
-|----------|-------|
-| APK / Android analysis | `skills/apk-reverse/` |
-| iOS / mobile | `skills/mobile-reverse/` |
-| Binary reverse (exe/dll/so/elf) | `skills/ida-reverse/` / `skills/radare2/` |
-| .NET / C# | `skills/dotnet-reverse/` |
-| Frontend JS / encrypted params | `skills/js-reverse/` |
-| DSL VM / custom JS opcode VM | `skills/reverse-engineering/dsl-vm-reverse/` |
-| HTTP capture / request replay | anything-analyzer, Reqable MCP + `js-reverse/` |
-| Malware / YARA | `skills/malware-analysis/` |
-| Penetration testing / scanning | `skills/pentest-tools/` |
-| Attack chain / red-team orchestration | `skills/attack-chain/` |
-| Case evidence review / report handoff | `skills/case-review/` |
-| CTF competition | `CTF-Sandbox-Orchestrator/` (42 sub-skills) |
-| Firmware / IoT | `skills/firmware-pentest/` |
-| Patch diff / N-day | `skills/patch-diff-exploit/` |
-| Pwn / exploit development | `skills/pwn-chain/` |
-| EDR bypass | `skills/edr-bypass-re/` |
-| API / GraphQL | `skills/api-security/` |
-| Supply chain / SBOM | `skills/supply-chain-security/` |
-| LLM / AI security | `skills/llm-security/` |
-| OLLVM deobfuscation | `skills/reverse-engineering/references/ollvm-deobfuscation.md` |
-| Diagrams / reports | `skills/diagram-generator/` / `skills/docs-generator/` |
 
 ### Key files
 
-| File | Purpose |
-|------|---------|
-| [README_AI.md](README_AI.md) | AI agent bootstrap and configuration |
-| [RULES.md](RULES.md) | Global routing rules (scope gate before ACT) |
-| [skills/MASTER-ROUTING.md](skills/MASTER-ROUTING.md) | PRIMARY fast ladder |
-| [skills/routing.md](skills/routing.md) | Task → skill routing matrix |
-| [skills/SKILL.md](skills/SKILL.md) | Master entry point |
-| [skills/INDEX.md](skills/INDEX.md) | Auto-generated, client-neutral skill navigation index |
-| [skills/config/routing.json](skills/config/routing.json) | **Routing single source of truth** (41 rules, R0–R40) |
-| [skills/tool-index.md](skills/tool-index.md) | Local tool status (auto-generated) |
-| [skills/scripts/master-route.ps1](skills/scripts/master-route.ps1) | One-shot PRIMARY triage (reads routing.json) |
-| [skills/scripts/case-init.ps1](skills/scripts/case-init.ps1) | Case dir: scope / timeline / workitems |
-| [skills/case-review/](skills/case-review/) | Read-only Evidence graph review and artifact fixity checks |
-| [skills/scripts/test-routing.ps1](skills/scripts/test-routing.ps1) | Routing regression runner (163 benchmark cases) |
-| [skills/scripts/verify-routing-coherence.ps1](skills/scripts/verify-routing-coherence.ps1) | Structure + supply-chain pin gate checks |
-| [skills/scripts/extract-summaries.ps1](skills/scripts/extract-summaries.ps1) | Regenerates INDEX.md from skill frontmatter |
-| [AGENTS.md](AGENTS.md) | Platform-neutral repository instructions |
-| [skills/ops/](skills/ops/) | Scope, Evidence chain, roles, timeline (skill-router form) |
 
 ### Testing (run after any routing/config change)
 
@@ -269,7 +201,6 @@ This project (`reverse-skill`) is primarily licensed under the **MIT License** (
 
 ## Acknowledgments
 
-Thanks to all open-source tool authors. This project integrates tools across reverse engineering, penetration testing, CTF, and security analysis — every tool is the fruit of community effort.
 
 Special thanks to the OLLVM deobfuscation ecosystem contributors and everyone who submitted test samples, issues, and PRs.
 

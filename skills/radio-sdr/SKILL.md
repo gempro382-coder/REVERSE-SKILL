@@ -15,11 +15,5 @@ description: Use for authorized RF/SDR security research including signal identi
 ```
 
 
-|------|------|
-
-
 - `references/sdr-lab-rules.md`
 - `../wifi-wireless/` `../ot-ics/` `../hardware-security/`
-
-
-- [ ] Checklist？

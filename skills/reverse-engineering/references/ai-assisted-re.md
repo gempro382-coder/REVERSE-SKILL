@@ -93,7 +93,4 @@ Given this network packet sequence, infer the protocol structure:
 ```
 
 
-|------|---------|------|
-
-
 Source: Decaf (2026), REMEND (2026), Constraint-Guided Multi-Agent Decompilation (2026), LLM4Decompile, Glaurung

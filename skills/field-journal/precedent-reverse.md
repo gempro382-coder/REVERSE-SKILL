@@ -148,8 +148,6 @@ $ strings target.bin | grep "cargo"                         — 找 Cargo 信息
 ---
 
 
-|---------|------------|
-
 ---
 
 
@@ -188,14 +186,5 @@ install_name_tool -change old.dylib new.dylib target        — 修改 dylib 依
 
 ---
 
-
-|------|----------|------|
-| jadx | 1.5.5 | `jadx` (PATH) |
-| apktool | 3.0.2 | `apktool` (PATH) |
-| Frida | 17.9.6 | `frida` / `frida-ps` (PATH) |
-| adb | latest | `adb` (PATH / Android SDK) |
-| r2 / rabin2 | latest | `r2` / `rabin2` (PATH) |
-| GoReSym | latest | `GoReSym` (PATH) |
-| objection | latest | `objection` (PATH) |
 
 ---

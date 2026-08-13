@@ -3,9 +3,6 @@
 ---
 
 
-|------|-------|------|------|
-
-
 ```bash
 pip install ciphey
 # 自动检测并解密
@@ -29,8 +26,6 @@ ciphey -f encrypted.txt
 ---
 
 
-|------|------|------|
-
 ```bash
 # 识别哈希类型
 hashid '5f4dcc3b5aa765d61d8327deb882cf99'
@@ -47,8 +42,6 @@ hashcat -m 1000 hash.txt rockyou.txt  # NTLM
 ---
 
 
-|------|------|------|
-
 ```bash
 # RsaCtfTool 自动攻击
 python RsaCtfTool.py --publickey pub.pem --private
@@ -61,8 +54,6 @@ python RsaCtfTool.py --publickey pub.pem --uncipherfile cipher.txt
 
 ---
 
-
-|------|------|------|
 
 ```bash
 # 猜测 XOR key 长度
@@ -77,30 +68,14 @@ xortool-xor -f encrypted -s "known_plaintext"
 ---
 
 
-|---------|------|------|
+---
+
 
 ---
 
 
-|------|---------|---------|
-
 ---
 
-
-|-----------|------|
-| `0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476` | MD5 |
-| `0x6A09E667, 0xBB67AE85, 0x3C6EF372` | SHA-256 |
-| `0xB7E15163, 0x9E3779B9` | RC5/RC6/TEA |
-| `0x61707865` ("expa") | ChaCha20/Salsa20 |
-| `0xC6EF3720` | XTEA |
-
-
-|---------|-----------|
-
----
-
-
-|------|------|------|
 
 ---
 
@@ -131,6 +106,3 @@ xortool-xor -f encrypted -s "known_plaintext"
 ```
 
 ---
-
-
-|------|------|------|

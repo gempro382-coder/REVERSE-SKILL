@@ -1,8 +1,5 @@
 
 
-|---|---|---|---|
-
-
 ```python
 # 通用循环 XOR 文本布局
 key = blob[:key_length]

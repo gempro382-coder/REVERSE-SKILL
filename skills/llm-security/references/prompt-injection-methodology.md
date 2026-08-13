@@ -70,6 +70,3 @@ redteam:
     - encoding
     - multiling
 ```
-
-
-|------|------|---------|

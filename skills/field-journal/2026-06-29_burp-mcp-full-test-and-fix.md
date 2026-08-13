@@ -1,8 +1,5 @@
 
 
-|------|------|---------|------|
-
-
 ```javascript
 const http = require('http');
 function call(tool, params={}, timeoutMs=30000) {

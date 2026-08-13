@@ -33,11 +33,5 @@ description: Use for authorized security testing of desktop thick clients includ
 ```
 
 
-|------|------|
-
-
 - `references/thick-client-checklist.md`
 - `../dotnet-reverse/` `../ida-reverse/` `../js-reverse/` `../api-security/`
-
-
-- [ ] Checklist？

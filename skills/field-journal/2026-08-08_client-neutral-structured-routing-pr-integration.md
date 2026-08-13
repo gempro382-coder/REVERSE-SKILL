@@ -9,16 +9,7 @@
 - specialists: [cae, doc]
 
 
-|------|-------------|----------------|--------------|
-| E-001 | git diff | `git diff <main>...<pr-ref>` | F-001 |
-| E-002 | regression | `test-routing.ps1` + coherence + smoke | F-001 |
-| E-003 | unit tests | Python unittest + Node test + Bash parity | F-002 |
-
-
 - path_type: callflow
-
-
-|------|------|---------|------|
 
 
 ```text

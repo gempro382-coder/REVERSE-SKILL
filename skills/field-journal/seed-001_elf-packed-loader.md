@@ -1,8 +1,5 @@
 
 
-|------|------|---------|------|
-
-
 ```bash
 # 确认文件类型
 file LinYuDriverLoader4.9.sh

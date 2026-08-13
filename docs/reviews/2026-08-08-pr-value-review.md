@@ -1,8 +1,5 @@
 
 
-|---|---|---|---|
-
-
 ```mermaid
 flowchart TD
     A[开放 PR] --> B{仅文档与脱敏 journal?}
@@ -13,6 +10,3 @@ flowchart TD
     F -->|是| G[暂缓并要求 rebase/拆分]
     F -->|否| H[隔离运行测试后再决定]
 ```
-
-
-- `skills/scripts/verify-routing-coherence.ps1`: ALL ROUTING COHERENCE CHECKS PASSED。

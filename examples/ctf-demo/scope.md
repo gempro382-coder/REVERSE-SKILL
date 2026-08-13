@@ -24,8 +24,6 @@
 
 ## network_profile
 - mode: authorized_target_only
-- notes: |
-    offline | lab_only | authorized_target_only | unrestricted_lab
     Change mode only after auth.status = granted.
 
 ## deliverables

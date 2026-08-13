@@ -390,7 +390,6 @@ cipher = AES.new(key, AES.MODE_CBC, iv=key)
 plaintext = cipher.decrypt(ct)
 ```
 
-**Key insight:** When `RijndaelManaged` appears in .NET decompilation, check if Key and IV are set to the same value — this is a common CTF pattern. The XOR stage often serves as a simple obfuscation layer before the real crypto.
 
 ---
 
@@ -447,19 +446,11 @@ for insn in md.disasm(code[TEXT_OFFSET:], TEXT_OFFSET):
 ```
 
 **Common RISC-V patterns:**
-- `li a0, N` → load immediate (argument setup)
-- `mv a0, s0` → register move
-- `call offset` → function call (auipc + jalr pair)
-- `beq/bne a0, zero, label` → conditional branch
-- `sd/ld` → 64-bit store/load
-- `addiw` → 32-bit add (W-suffix = word operations)
 
 **Key differences from x86:**
-- No flags register — comparisons are inline with branch instructions
 - Arguments in a0-a7 (not rdi/rsi/rdx)
 - Return value in a0
 - Saved registers s0-s11 (callee-saved)
-- Compressed instructions (2 bytes) mixed with standard (4 bytes) — use `CS_MODE_RISCVC`
 
 **Anti-RE tricks in RISC-V:**
 - Fake flags as string constants (check for `"n0t_th3_r34l"` patterns)
@@ -490,7 +481,6 @@ for func in bv.functions:
     print(func.hlil)  # High-Level IL
 ```
 
-**Community plugins:** Available via Plugin Manager (Ctrl+Shift+P → "Plugin Manager").
 
 **Free version:** https://binary.ninja/free/ (cloud-based, limited features).
 
@@ -505,8 +495,6 @@ for func in bv.functions:
 **Supported decompilers:** Hex-Rays (IDA), Ghidra, Binary Ninja, angr, RetDec, Snowman, dewolf, Reko, Relyze.
 
 **When to use:**
-- Decompiler output is confusing — compare with alternatives for clarity
-- One decompiler mishandles a construct — another may get it right
 - Quick triage without installing every tool locally
 - Validate decompiler correctness by cross-referencing outputs
 

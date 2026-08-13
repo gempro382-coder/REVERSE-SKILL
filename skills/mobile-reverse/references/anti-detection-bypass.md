@@ -20,9 +20,6 @@ Layer 3: 环境检测（按需触发）
 ```
 
 
-|--------|---------|---------|
-
-
 ```javascript
 Java.perform(function() {
     // RootBeer

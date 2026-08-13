@@ -1,8 +1,5 @@
 
 
-|------|------|---------|------|
-
-
 ```javascript
 // Node.js 复现
 const crypto = require('crypto');

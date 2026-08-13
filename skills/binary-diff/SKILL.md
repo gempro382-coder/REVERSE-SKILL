@@ -1,13 +1,6 @@
 ---
 name: binary-diff
-description: |
 ---
-
-
-|------|--------|
-
-
-|------|--------------|------|--------|
 
 
 ```text
@@ -98,9 +91,6 @@ If nothing found, output an empty YAML. DO NOT output anything other than the de
 ```
 
 
-|------|------|------|
-
-
 ```text
 Step 1: 准备数据
   - 旧版二进制加载到 IDA（有 PDB/符号）
@@ -125,12 +115,6 @@ Step 5: 迭代
   - 进入这些函数，继续对比内部调用
   - 重复直到覆盖所有目标函数
 ```
-
-
-|---------|--------|------|
-
-
-|------|------|---------|
 
 
 ```text
@@ -171,13 +155,7 @@ found_struct_offset → idapro_set_comments(addr=insn_va, comment="{struct_name}
 ```
 
 
-|------|---------|------|------|
-
-
 ---
-
-
-|------|------|-----------|
 
 
 ---

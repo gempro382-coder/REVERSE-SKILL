@@ -3,13 +3,7 @@
 ---
 
 
-|---------|---------|------|------|
-
-
 ---
-
-
-|------|----------|----------------------|---------|
 
 
 ---
@@ -44,8 +38,6 @@ a - b  →  a + (~b) + 1
 ```
 
 
-|---------|---------|------------|
-
 ---
 
 
@@ -60,10 +52,6 @@ a - b  →  a + (~b) + 1
 7. 可根据反编译变化继续标记新的分发块（迭代处理嵌套 fla）
 ```
 
-
-|------|------|
-
-|------------|------|------|
 
 ```text
 1. clone d810-ng
@@ -84,17 +72,6 @@ pip install -r requirements.txt   # miasm, graphviz, keystone-engine
 python unflattener -i <input.bin> -o <output.bin> -t <function_addr> -a
 # -a: 自动跟随调用做多层处理
 ```
-
-
-> [amimo/ollvm-breaker](https://github.com/amimo/ollvm-breaker) · 441⭐
-
-
-### 3.5 deollvm — ARM64 Unicorn
-
-> [GeT1t/deollvm](https://github.com/GeT1t/deollvm) · 34⭐ · 2026-04
-
-
-> [Mrack/DeObfBR](https://github.com/Mrack/DeObfBR) · 96⭐ · 2026-06-25
 
 
 ```python
@@ -214,8 +191,6 @@ for func in funcs:
 ```
 
 
-|------|------|------|
-
 ```python
 # SiMBA 示例
 from simba import simplify_mba
@@ -261,20 +236,7 @@ echo "[+] Done. 在 IDA 中重新分析验证。"
 ---
 
 
-|------|------|---------|
-
 ---
 
 
-|------|------|------|---------|---------|------|------|
-
 ---
-
-
-- [HikariObfuscator/Hikari](https://github.com/HikariObfuscator/Hikari) — Hikari
-- [amimo/goron](https://github.com/amimo/goron) — goron
-- [bluesadi/Pluto](https://github.com/bluesadi/Pluto) — Pluto
-- [open-obfuscator/o-mvll](https://github.com/open-obfuscator/o-mvll) — O-MVLL
-
-- [amimo/ollvm-breaker](https://github.com/amimo/ollvm-breaker) — Binary Ninja
-- [GeT1t/deollvm](https://github.com/GeT1t/deollvm) — ARM64 Unicorn

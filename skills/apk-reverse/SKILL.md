@@ -98,7 +98,6 @@ adb pull /data/local/tmp/file .
 
 
    - `AndroidManifest.xml`
-   - `application`、`activity`、`service`、`receiver`
 
 
 - `MainActivity`
@@ -131,9 +130,6 @@ pwsh -File "<skill-root>\apk-reverse\scripts\rebuild-sign-install.ps1" -ProjectD
 ```
 
 
-- Hook `javax.crypto`、`MessageDigest`
-
-
 ```bash
 # 反编译 Java
 jadx -d jadx_out app.apk
@@ -156,6 +152,3 @@ frida -U -f com.example.app -l hook.js
 
 
 ---
-
-
-|------|-----------|---------|------|

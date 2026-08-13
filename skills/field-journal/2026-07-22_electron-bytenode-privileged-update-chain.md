@@ -1,8 +1,5 @@
 
 
-|---|---|---|---|
-
-
 ```powershell
 $env:ELECTRON_RUN_AS_NODE = '1'
 $env:__COMPAT_LAYER = 'RunAsInvoker'

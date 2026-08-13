@@ -44,20 +44,12 @@ for (int candidate = 0; candidate < 65536; candidate++) {
 ```
 
 **Performance tiers:**
-| Approach | Speed | 256-layer estimate |
-|----------|-------|--------------------|
-| Python subprocess | ~2/s | days |
-| Ptrace fork injection | ~119/s | 6+ hours |
-| JIT + fork-per-candidate | ~1000/s | 140 min |
-| JIT + shared BSS + 32 workers | ~3500/s | **~17 min** |
 
 **Shared BSS optimization:** BSS (16MB+) stored in `/dev/shm` as `MAP_SHARED` in parent. Children remap as `MAP_PRIVATE` for COW. Reduces fork overhead from 16MB page-table setup to ~4KB.
 
 **Key insight:** Multi-layer decryption challenges are fundamentally about building fast brute-force engines. JIT execution (mapping binary memory into solver, running code directly as function calls) is orders of magnitude faster than ptrace. Fork-based COW provides free memory isolation per candidate.
 
 **Gotchas:**
-- Real binary may use `call` (0xe8) instead of `jmp` (0xe9) for layer transitions — adjust tail patching
-- BSS may extend beyond ELF MemSiz via kernel brk mapping — map extra space
 - SHA-NI instructions work even when not advertised in `/proc/cpuinfo`
 
 ---
@@ -68,7 +60,6 @@ for (int candidate = 0; candidate < 65536; candidate++) {
 
 **Recognition:**
 - `strings` reveals `EMBEDDED_ZIP` and `ENCRYPTED_MESSAGE` symbols
-- Binary is not stripped — `nm` or `readelf -s` shows data symbols in `.rodata`
 - `file` shows PIE executable, source file named `licensed.c`
 
 **Analysis workflow:**
@@ -103,12 +94,9 @@ flag = bytes(a ^ b for a, b in zip(enc_msg, license))
 print(flag.decode())
 ```
 
-**Key insight:** No need to run the binary or bypass the expiry date check. The embedded ZIP and encrypted message are both in `.rodata` — extract and XOR offline.
 
 **Disassembly confirms:**
-- `memcmp(user_license, decompressed_embedded_zip, size)` — license validation
 - Date parsing with `sscanf("%d-%d-%d")` on `EXPIRY_DATE=` field
-- XOR loop: `ENCRYPTED_MESSAGE[i] ^ license[i]` → `putc()` per byte
 
 **Lesson:** When a binary has named symbols (`EMBEDDED_*`, `ENCRYPTED_*`), extract data directly from the binary without execution. XOR with known plaintext (the license) is trivially reversible.
 
@@ -167,7 +155,6 @@ for pos in range(1, len(target_hashes)):
             break
 ```
 
-**Key insight:** If each prefix hash is independent (no chaining/HMAC), the problem decomposes into `N` x `|charset|` binary executions. This is the hash equivalent of byte-at-a-time block cipher attacks.
 
 **Detection:** Binary outputs multiple hash lines. Changing last character only changes last hash. Different input lengths produce different numbers of output lines.
 
@@ -221,11 +208,8 @@ def solve_constrained_matrix(coefficients, targets, char_range=(32, 126)):
 ```
 
 **Two-phase validation pattern:**
-1. **Phase 1 (matrix math):** Solve via CVP/LLL → recovers first N characters
-2. First N characters become AES key → decrypt `file.bin` (XOR last 16 bytes + AES-256-CBC + zlib decompress)
 3. **Phase 2 (custom VM):** Decrypted bytecode runs in custom VM, validates remaining characters via another linear system (mod 2^32)
 
-**Modular linear system solving (Phase 2 — VM validation):**
 ```python
 import numpy as np
 from sympy import Matrix
@@ -239,7 +223,6 @@ solution = M_mod.solve(v_mod)  # Returns flag characters
 
 **Key insight:** When a binary validates input through linear combinations with large coefficients and the solution must be in a small range (printable ASCII), this is a lattice problem in disguise. LLL reduction + CVP finds the nearest lattice point, recovering the constrained solution. Cross-reference: invoke `/ctf-crypto` for LLL/CVP fundamentals (advanced-math.md in ctf-crypto).
 
-**Detection:** Binary performs matrix-like operations on grouped input, compares against 64-bit constants, and a brute-force search space is too large (e.g., 256^4 per group × 12 groups).
 
 ---
 
@@ -275,12 +258,9 @@ for func in fm.getFunctions(True):
 ```
 
 **Constraint propagation from known output format:**
-1. Start from known output bytes (e.g., `http://HTB{...}`) → fix several input positions
-2. Fixed positions cascade through arithmetic constraints → determine dependent positions
 3. Tree root equation pins down remaining free variables
 4. Recognize English words in partial flag to disambiguate multiple solutions
 
-**Key insight:** Auto-generated decision trees look overwhelming but are repetitive by construction. Script the extraction (Ghidra, Binary Ninja, radare2) rather than reversing each function manually. The tree is just a dispatcher — the real logic is in the leaf function and its constraints.
 
 **Detection:** Binary with hundreds of similarly-structured functions, 3-5 input position references per function, branching to two other functions or a common leaf.
 
@@ -338,9 +318,6 @@ for col in range(N):
 flag = bytes(aug[i][N] for i in range(N))
 ```
 
-**Key insight:** GF(2^8) is NOT regular integer arithmetic — addition is XOR, multiplication uses polynomial reduction. The AES polynomial (0x11b) is the most common; look for the constant `0x1b` in disassembly. The binary may encrypt the result with AES-GCM afterward, but the raw solution vector (pre-encryption) is the flag.
-
-**Detection:** Binary with a large matrix in `.rodata` (N² bytes), XOR-based row operations, constants `0x1b` or `0x11b`, and flag length matching sqrt of matrix size.
 
 ---
 
@@ -350,7 +327,6 @@ flag = bytes(aug[i][N] for i in range(N))
 
 **Analysis approach:**
 
-1. **Detect the ROP dispatch:** Look for `mov esp, eax; ret` or similar stack pivot — this redirects execution into the ROP chain
 2. **Dump the ROP chain:** Script GDB to disassemble instructions after each return address in the chain:
 ```python
 # GDB script to trace ROP gadgets
@@ -376,7 +352,6 @@ while offset < buf_size:
    - XOR of input with hash as keystream
    - Comparison with embedded constants
 
-5. **Extract and solve:** Dump the embedded constants, brute-force any intermediate values (e.g., character sum → MD5 with matching prefix), then XOR to recover the key:
 ```python
 import hashlib
 
@@ -392,6 +367,5 @@ for s in range(128 * 0x35):  # max sum of printable chars * key_length
 flag = bytes(v ^ md5_key[i % 16] for i, v in enumerate(embedded_values))
 ```
 
-**Key insight:** ROP chain obfuscation ("ROPfuscation") hides algorithms in chains of return-oriented gadgets. The chain looks incomprehensible as raw addresses but becomes analyzable when you: (a) dump each gadget's disassembly, (b) filter repetitions and skip regions, (c) annotate register effects. The chain is functionally equivalent to normal code — it just uses `ret` instead of sequential execution. Large chains (100K+ gadgets) often contain unrolled loops that compress to ~1000 lines of pseudocode.
 
 See also: [patterns-ctf.md](patterns-ctf.md) for Part 1 (hidden emulator opcodes, SPN static extraction, image XOR smoothness, byte-at-a-time cipher, mathematical convergence bitmap, Windows PE XOR bitmap OCR, two-stage RC4+VM loaders, kernel module maze solving, multi-threaded VM channels). [patterns-ctf-3.md](patterns-ctf-3.md) for Part 3 (Z3 single-line Python circuit, sliding window popcount, keyboard LED Morse code, C++ destructor-hidden validation, syscall side-effect memory corruption, MFC dialog event handlers, VM sequential key-chain brute-force, Burrows-Wheeler transform inversion, OpenType font ligature exploitation, GLSL shader VM with self-modifying code, instruction counter as cryptographic state).

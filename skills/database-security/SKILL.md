@@ -16,11 +16,5 @@ description: Use for authorized database security assessment covering PostgreSQL
 ```
 
 
-|------|------|
-
-
 - `references/db-misconfig-checklist.md`
 - `../pentest-tools/` `../cloud-k8s/`
-
-
-- [ ] Checklist？

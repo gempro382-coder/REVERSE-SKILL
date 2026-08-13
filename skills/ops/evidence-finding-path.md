@@ -49,8 +49,6 @@ The review is read-only and checks scope fields, Evidence records, work item and
 ```
 
 
-|------|-----------|
-
 ```markdown
 ### P-{nnn}
 - title:
@@ -62,7 +60,3 @@ The review is read-only and checks scope fields, Evidence records, work item and
   2. action: — evidence: E-xxx — finding: F-yyy | none
 - residual_risks:
 ```
-
-
-| Z3r0 | reverse-skill |
-|------|----------------|

@@ -8,7 +8,6 @@
    cd _firmware.bin.extracted/squashfs-root
    ```
    ```bash
-   strings $(find . -name 'httpd') | grep -i 'admin\|debug\|backdoor'
    ```
    ```bash
    john --wordlist=rockyou.txt shadow
@@ -18,9 +17,6 @@
    ```bash
    sudo screen /dev/ttyUSB0 115200
    ```
-
-
-|------|------|---------|------|
 
 
 ```bash
@@ -89,6 +85,3 @@ support / support
 ubnt / ubnt          # Ubiquiti
 admin / 1234         # ZyXEL
 ```
-
-
-- Kali 2026.x（binwalk / unblob / squashfs-tools / firmwalker）

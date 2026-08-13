@@ -1,8 +1,5 @@
 
 
-|--------|-------------|---------|---------|---------|
-
-
 ```powershell
 # 自动识别（多数情况够用）
 de4dot target.exe -o target-clean.exe
@@ -57,8 +54,6 @@ de4dot --type sa target.exe -o target-clean.exe
 
 ---
 
-## .NET Reactor（necrobit）
-
 
 ```text
 当 de4dot 失败时：
@@ -78,6 +73,3 @@ de4dot --type sa target.exe -o target-clean.exe
 3. de4dot 指定解密器：
    de4dot --strtyp delegate --strtok 0x06000012 target.exe -o target-clean.exe
 ```
-
-
-|------|------|------|

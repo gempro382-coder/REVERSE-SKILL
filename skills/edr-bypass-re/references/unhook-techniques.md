@@ -213,15 +213,3 @@ LONG CALLBACK Blindside(EXCEPTION_POINTERS* ep) {
                 ↓
                 trampoline 还原 → 继续 implant 代码
 ```
-
-
-|------|------|--------|------------|--------|
-
-
-- SysWhispers3：<https://github.com/klezVirus/SysWhispers3>
-- Hell's Gate / Halo's Gate POC：<https://github.com/am0nsec/HellsGate>、<https://github.com/SafeBreach-Labs/HalosGate-PoC>
-- Tartarus Gate：<https://github.com/trickster0/TartarusGate>
-- CallStackSpoofer：<https://github.com/WithSecureLabs/CallStackSpoofer>
-- SilentMoonwalk：<https://github.com/klezVirus/SilentMoonwalk>
-- Blindside（hardware breakpoint）：<https://www.cyberark.com/resources/threat-research-blog/blindside-a-new-technique-for-edr-evasion-with-hardware-breakpoints>
-- MITRE T1562.001：<https://attack.mitre.org/techniques/T1562/001/>

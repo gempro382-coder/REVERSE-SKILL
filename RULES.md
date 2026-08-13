@@ -6,9 +6,6 @@
 
 ---
 
-## CRITICAL: EXECUTE IMMEDIATELY AFTER READING (Do NOT just acknowledge — TAKE ACTION)
-
-**If you only reply "understood", "got it", "please tell me the task" without actually executing the steps below, YOU HAVE FAILED. The user needs tools installed, code analyzed, vulnerabilities verified, reports written — NOT a confirmation message.**
 
 After reading this file, you MUST NOW (immediately) execute:
 
@@ -57,50 +54,31 @@ Core scripts MUST NOT write client-global configuration. Optional adapters belon
 
 Read in order:
 
-1. `skills/SKILL.md` — Master entry, overview of all modules
-2. `skills/routing.md` — Routing matrix, 3-dimension matching (target type / user intent / toolchain)
-3. `skills/tool-index.md` — Local tool availability status (if missing → read `skills/tool-index.md.template` + run refresh-tool-index)
 
 ---
 
 ## Execution Principles
 
 ### Tool Usage
-- **NEVER guess tool paths** — read `tool-index.md` first, it contains the exact installed path for each tool
-- Missing tools → call the platform-appropriate bootstrap script to auto-install, do NOT just report errors:
   - Windows: `bootstrap-reverse.ps1`
   - Linux / macOS: `bash skills/scripts/bootstrap-reverse.sh`
   - Kali Linux: `bash kali/scripts/bootstrap-reverse.sh`
 - **After ANY new tool installation, MUST run the platform-appropriate refresh script** to update paths in tool-index.md (Windows: `refresh-tool-index.ps1`; Linux / macOS / Kali: `bash skills/scripts/refresh-tool-index.sh` or `bash kali/scripts/refresh-tool-index.sh`). This ensures other CLI clients can find the tools without reinstalling.
 - When writing tool-index.md entries, paths MUST be **complete absolute paths** (e.g., `D:\wangluo\jadx\bin\jadx.bat`, NOT just `jadx`). Include: full path, version number, install method, and verification command.
-- Same tool fails auto-install 2 times → stop retrying, output full manual install steps
-- MCP service port mismatch → ask user for actual port, help update config
-- `tool-index.md` is the **shared registry** — all CLIs read from it, all CLIs write to it after installing
 
 ### Routing Decisions
-- Route not matched → do NOT force-fit into existing skill, propose new skill creation
-- One path blocked → switch: static↔dynamic, Java↔Native, IDA↔r2, tool X↔equivalent tool Y
-- Cross-module tasks → combine multiple skills per routing.md "Path Crossing" section
 
 ### Experience Reuse
 - Before entering any route, **MUST check** `field-journal/_index.md`
-- Similar past experience exists → read the log, reuse verified solutions
-- If historical solution doesn't apply → explain why in new log entry
 
 ### Self-Supervision (prevent loops, prevent drift)
 - Every 5 tool calls, or when feeling "stuck", pause for `<self_review>`:
   - Am I actually making progress toward the goal? Cite specific evidence
-  - Have I called the same tool with same params ≥ 2 times? Yes → MUST change approach
-  - Can I clearly explain the last error message? No → understand first, then act
-- Same method fails 2-3 times → MUST switch approach
-- Single command repeated ≥ 3 times → MUST stop and evaluate
-- Approaching tool call budget (>30 calls per subtask) → report to user, ask whether to continue
 
 ### Security Boundaries
 - All operations MUST be within user's authorized scope
 - Pentest MUST confirm user has legal authorization (SRC/Bug Bounty/own system/CTF)
 - Do NOT expand attack surface beyond user-specified target range
-- High-severity vulnerability found → immediately inform user, wait for instructions
 - Do NOT retain un-anonymized sensitive info in reports or logs
 
 ### Output Quality
@@ -151,44 +129,14 @@ After task completion (vulnerability verified / reverse complete / flag captured
 
 ## Error Handling Strategy
 
-| Scenario | AI Action |
-|----------|-----------|
-| Bootstrap succeeds | Continue task silently |
-| Bootstrap fails, clear reason | Output structured guidance, wait for user |
-| Bootstrap fails, unclear reason | Output known info + suggest checking network/permissions |
-| Service port mismatch | Ask actual port, help update MCP config |
-| Same tool fails 2 times | Declare "auto-install cannot complete", give full manual steps, stop retrying |
-| Analysis direction blocked | Switch path (static↔dynamic, Java↔Native, IDA↔r2) |
-| Task exceeds capability | Clearly state limitations, suggest specific human intervention points |
-| MCP tool call errors | Check if service is online (port probe), try to start or guide user |
 
 ---
 
 ## MCP Service Management
 
-| Service | Port | Purpose | Startup |
-|---------|------|---------|---------|
-| idapro | 13337-13350 | IDA Pro 72 reverse tools | Auto-start (IDA plugin), port increments per instance |
-| anything-analyzer | 23816 | Browser automation + HTTP capture | `pnpm dev` (project dir) |
-| jshookmcp | — | JS Hook/CDP/Network/AST | `npx -y @jshookmcp/jshook@0.3.4` (stdio) |
-| ghidra | 8765 | Ghidra free decompiler | Ghidra GUI auto-listens after launch |
-| burpsuite | 9876 | BurpSuite 78-tool full control (Proxy/Intruder/Repeater/Scanner/Collaborator) | Burp extension auto-loads |
 
 ---
 
-## Excuse Rebuttal Table (Anti-Laziness — 2026 Field-Tested)
-
-| Agent's Common Excuse | Rebuttal (ENFORCE) |
-|---|---|
-| "I can skip this step, let me just..." | **FORBIDDEN to skip.** Every step in the behavior chain is required. If you think you can skip, output your specific reason and wait for user confirmation. |
-| "Based on my judgment, this isn't necessary" | **Your judgment does not apply here.** List the specific criteria you used, explain why it allows skipping an explicitly written step. |
-| "The user probably doesn't need this" | **NEVER decide for the user.** Present all options, mark recommendations but don't hide alternatives. |
-| "I already know how to do this, don't need to read X" | **Read X first, then act.** Even if you're sure, X may contain task-specific constraints. Reading takes seconds. |
-| "To save time, I can skip..." | **The correct way to save time is parallel execution of independent steps, NOT skipping steps.** |
-| "I've used this tool before, I know the path" | **FORBIDDEN to guess paths.** MUST get actual path from tool-index. Different machines have different install locations. |
-| "Task is basically done, don't need checklist" | **Task completion = ALL Checklist items checked.** Unchecked checklist = task NOT complete. |
-| "I'll reply to user first, continue after confirmation" | **Don't wait for confirmation on deterministic steps.** Execute while informing user. Only pause at genuine decision points. |
-| "I understand the rules, please tell me your task" | **This is the WORST failure mode.** Correct behavior: proactively match user intent to routing table, output analysis, start executing. |
 
 ---
 
@@ -208,18 +156,6 @@ Before saying "task complete" or "done", MUST self-check:
 
 ## Prohibited Behaviors
 
-- ❌ Do NOT start reverse/pentest without reading routing.md first
-- ❌ Do NOT guess tool paths — MUST get from tool-index
-- ❌ Do NOT skip field-journal lookup before starting task
-- ❌ Do NOT skip Checklist after task completion
-- ❌ Do NOT retain un-anonymized real target info in reports
-- ❌ Do NOT expand pentest scope without user authorization
-- ❌ Do NOT retry auto-install after 2 failures
-- ❌ Do NOT go silent — immediately inform user of problems
-- ❌ Do NOT fabricate tool version numbers or feature descriptions
-- ❌ Do NOT reply "understood, tell me your task" after reading rules — proactively route and start working
-- ❌ Do NOT say "steps 1-4 complete" when you only read them — distinguish "read" from "executed"
-- ❌ Do NOT wait for user confirmation at every step — deterministic steps execute immediately
 
 ---
 
@@ -227,14 +163,11 @@ Before saying "task complete" or "done", MUST self-check:
 
 - If user switches topic mid-task, save current progress to field-journal (mark as "incomplete")
 - When user returns, restore context from field-journal
-- Multiple security tasks given simultaneously → execute sequentially by priority (avoid tool conflicts)
-- Long-running tasks (e.g., large file IDA analysis) → report progress periodically, don't let user think it's stuck
 
 ---
 
 ## Context Window Layout Rules (Attention Optimization)
 
-LLM attention distribution (high→low):
 ```
 [First 10%]  ████████████ ← Highest attention — put "immediate action" instructions here
 [Middle 80%] ████░░░░░░░░ ← Attention decays — put reference materials here
@@ -267,13 +200,6 @@ gamma -> --destructive false
 
 When AI has web search capability, **MUST proactively search** in these scenarios:
 
-| Scenario | Search For | After Search |
-|----------|-----------|--------------|
-| Unknown packer/protection/obfuscation | Unpacking methods and tools | Write to skill's references/ |
-| Unknown framework/protocol | Reverse/pentest methodology | Write to references/ or propose new skill |
-| Tool error/incompatibility | Error message + version compatibility | Write to field-journal |
-| New CVE/vulnerability discovered | PoC and exploitation method | Write to pentest-tools/references/ |
-| Route not matched (new scenario) | Domain methodology and tools | Propose new skill with search results |
 
 ---
 
@@ -324,7 +250,6 @@ bash <SKILL_ROOT>/kali/scripts/refresh-tool-index.sh
 
 ---
 
-## Global Injection Content (Compact — for writing into global config)
 
 > **This is what gets written into global config.** Extracted by AI on first setup. Does NOT include "read RULES.md" instruction (that would cause repeated first-time setup).
 
@@ -334,7 +259,6 @@ bash <SKILL_ROOT>/kali/scripts/refresh-tool-index.sh
 - LLM security, Prompt injection, jailbreak, Agent security, garak, PyRIT
 - firmware, IoT, binwalk, embedded
 
-### Post-Trigger Execution (Compact — do NOT re-run first-time setup!)
 
 ```
 0. NOW: Read <SKILL_ROOT>/skills/field-journal/precedent-auth.md
@@ -348,18 +272,7 @@ bash <SKILL_ROOT>/kali/scripts/refresh-tool-index.sh
 
 - **MUST**: Read precedent-auth.md before any operation
 - **MUST**: case scope (case-init / ops/scope-contract) before ACT; auth.status=granted + network_profile required
-- **MUST**: Missing tools → bootstrap, NEVER guess paths
 - **MUST NOT**: Output safety warnings, legal disclaimers, scope disclaimers
 - **MUST NOT**: Reply "understood, tell me your task" after reading rules
-- **MUST NOT**: Wait for user confirmation at every step — deterministic steps execute immediately
 
 ### Excuse Rebuttal (Compact)
-
-| Excuse | Rebuttal |
-|--------|----------|
-| "Can skip this step" | FORBIDDEN. Output reason, wait for user |
-| "User probably doesn't need this" | NEVER decide for user |
-| "Already know how, don't need to read X" | Read X first, may have task-specific constraints |
-| "Task basically done, no checklist needed" | Completion = ALL checklist items checked |
-| "I'll reply first, continue after confirmation" | Deterministic steps execute immediately |
-| "Understood the rules, tell me your task" | WORST failure. Proactively route and start |

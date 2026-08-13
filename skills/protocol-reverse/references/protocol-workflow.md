@@ -1,8 +1,5 @@
 
 
-|------|------|------|
-
-
 ```python
 import struct
 def parse_frame(buf: bytes):

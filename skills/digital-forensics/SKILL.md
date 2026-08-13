@@ -34,12 +34,5 @@ vol -f mem.dmp windows.cmdline
 ```
 
 
-|------|------|
-| tshark | PCAP |
-
-
 - `references/forensics-triage.md`
 - `../malware-analysis/` `../threat-hunting/` `../protocol-reverse/`
-
-
-- [ ] Checklist？

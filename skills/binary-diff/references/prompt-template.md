@@ -66,9 +66,6 @@ If nothing found, output an empty YAML. DO NOT output anything other than the de
 ```
 
 
-|------|------|---------|
-
-
 ```python
 import yaml
 import httpx

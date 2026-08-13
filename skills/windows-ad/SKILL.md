@@ -29,14 +29,7 @@ bloodhound-python -d domain.local -u user -p pass -c All -ns <DC>
 ```
 
 
-|------|------|
-| Certipy | AD CS |
-
-
 - `references/ad-attack-paths.md`
 - `../pentest-tools/references/network-attack-defense.md`
 - `../attack-chain/`
 - seeds: `field-journal/seed-005_ad-certipy-esc1.md` `seed-007_ntlm-relay-coercer.md` `seed-013_kerberoasting-spn.md`
-
-
-- [ ] Checklist？

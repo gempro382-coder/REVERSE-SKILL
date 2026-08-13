@@ -1,8 +1,5 @@
 
 
-|------------|-----------|---------|-----------|
-
-
 ```powershell
 $edrSigs = @{
     'CSAgent'           = 'CrowdStrike Falcon'
@@ -30,9 +27,6 @@ Get-ChildItem 'C:\Windows\System32\drivers\*.sys' |
 ```
 
 
-|------|-----------|--------|
-
-
 ```powershell
 # 简单：把磁盘 ntdll 和当前进程的 ntdll 反汇编 diff
 # 1. 拿磁盘 ntdll
@@ -50,9 +44,6 @@ copy C:\Windows\System32\ntdll.dll C:\temp\ntdll_clean.dll
 #    ret
 # 如果第一条变成 jmp <某地址>，那就是 hook
 ```
-
-
-|-----|--------------|-----------|
 
 
 ```text
@@ -123,18 +114,3 @@ modified_modules.tag 示例：
      - 是否被 EDR DLL 中转
 5. 在 Modules tab 看哪些 EDR DLL 被 LoadLibrary 注入
 ```
-
-
-|-----|------|------|
-| `umppc*.dll` | Microsoft Defender | MpClient userland |
-| `mpoav.dll` | Microsoft Defender | AMSI provider |
-| `aswAMSI.dll` | Avast | AMSI provider |
-| `eamsi.dll` | ESET | AMSI provider |
-
-
-- pe-sieve：<https://github.com/hasherezade/pe-sieve>
-- HollowsHunter：<https://github.com/hasherezade/hollows_hunter>
-- API Monitor v2：<http://www.rohitab.com/apimonitor>
-- MITRE ATT&CK T1562：<https://attack.mitre.org/techniques/T1562/>
-- MITRE ATT&CK T1055：<https://attack.mitre.org/techniques/T1055/>
-- ired.team EDR notes：<https://www.ired.team/offensive-security/defense-evasion>

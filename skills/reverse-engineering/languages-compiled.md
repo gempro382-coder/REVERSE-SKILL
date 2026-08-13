@@ -116,7 +116,6 @@ struct GoInterface {
 # Channel: pointer to runtime.hchan struct
 ```
 
-**In Ghidra/IDA:** When you see a function taking `(ptr, int64)` — it's likely a Go string. Three-field `(ptr, int64, int64)` is a slice.
 
 ### Goroutine and Concurrency Analysis
 
@@ -133,17 +132,10 @@ gdb ./binary
 ```
 
 **Channel operations in disassembly:**
-- `runtime.chansend1` → `ch <- value`
-- `runtime.chanrecv1` → `value = <-ch`
-- `runtime.selectgo` → `select { case ... }`
-- `runtime.closechan` → `close(ch)`
 
 ### Common Go Patterns in Decompilation
 
 **Defer mechanism:**
-- `runtime.deferproc` → registers deferred function
-- `runtime.deferreturn` → executes deferred functions at function exit
-- Deferred calls execute in LIFO order — relevant for cleanup/crypto key wiping
 
 **Error handling (the `if err != nil` pattern):**
 ```text
@@ -154,8 +146,6 @@ gdb ./binary
 ```
 
 **String concatenation:**
-- `runtime.concatstrings` → `s1 + s2 + s3`
-- `fmt.Sprintf` → formatted string building
 - Look for format strings in `.rodata`: `"%s%d"`, `"%x"`
 
 **Common stdlib patterns in CTF:**
@@ -191,7 +181,6 @@ strings binary | grep "embed"
 # Search for known file signatures (PK for zip, PNG header, etc.)
 ```
 
-**Key insight:** Go's runtime embeds extensive metadata even in stripped binaries. Use GoReSym before any manual analysis — it often recovers 90%+ of function names, making decompilation dramatically easier. Go strings are `{ptr, len}` tuples, not null-terminated — Ghidra's default string analysis will miss them without the golang-loader plugin.
 
 **Detection:** Large static binary (2MB+ for simple programs), `go.buildid`, `runtime.gopanic`, source paths like `/home/user/go/src/`.
 
@@ -201,7 +190,6 @@ strings binary | grep "embed"
 
 **Approach:**
 1. Extract embedded UUID from Go build metadata: `go version -m client_binary`
-2. Binary-patch the UUID (simple byte replacement — Go strings have fixed-length backing arrays)
 3. Register with the C2 server using the patched binary (mTLS certs are embedded or in distfiles)
 4. Enumerate clients via API: `GET /api/clients` or iterate known endpoints
 5. List and download files from each client's GCS bucket or file store
@@ -247,7 +235,6 @@ strings binary | grep "core::panicking"   # Panic infrastructure
 
 **Key indicators:**
 - `core::panicking::panic` in strings
-- Mangled symbols starting with `_ZN` (Itanium ABI) — e.g., `_ZN4main4main17h...`
 - `.rustc` section in ELF
 - References to `/rustc/<commit_hash>/library/`
 - Large binary size (Rust statically links by default)
@@ -324,7 +311,6 @@ cargo bloat --release -n 50
 # https://github.com/AmateursCTF/ghidra-rust (community scripts for Rust RE)
 ```
 
-**Key insight:** Rust panic messages are goldmines — they contain source file paths, line numbers, and descriptive error strings even in release builds. Always `strings binary | grep "panicked"` first. Rust's monomorphization means generic functions get duplicated per type — expect many similar-looking functions.
 
 **Detection:** `core::panicking`, `.rustc` section, `/rustc/` paths, `_ZN` mangled symbols with Rust-style module paths.
 
@@ -442,7 +428,6 @@ def reverse_d_cipher(encrypted, num_functions=500):
     return bytes(result)
 ```
 
-**Key insight:** D binaries are rare in CTFs but identifiable by `_D` symbol prefixes and Phobos library references. The compile-time template system means D functions may be duplicated hundreds of times with different parameters — look for patterns like `enc!("N")` where N varies.
 
 ---
 

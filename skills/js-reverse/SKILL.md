@@ -49,9 +49,6 @@ name: js-reverse
 ---
 
 
-|------|-----------|------|------|
-
-
 ```powershell
 # 注册 jshookmcp 到 MCP 配置
 powershell -File "<skill-root>\scripts\bootstrap-reverse.ps1" -Capability @('jshookmcp')

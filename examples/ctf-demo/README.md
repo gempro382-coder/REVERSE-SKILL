@@ -9,9 +9,6 @@
 ```
 
 
-|------|------|
-
-
 ```powershell
 # 初始化真实 case（授权目标）
 powershell -NoProfile -ExecutionPolicy Bypass -File skills/scripts/case-init.ps1 `

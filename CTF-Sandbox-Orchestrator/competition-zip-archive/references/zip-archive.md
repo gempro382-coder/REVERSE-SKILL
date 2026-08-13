@@ -2,14 +2,6 @@
 
 ## Route Decision
 
-| Observation | Next step |
-|---|---|
-| ZIP/PKZIP archive, legacy encryption, predictable member bytes | Use `bkcrack` known-plaintext recovery |
-| Entry is stored and its file format is known | Build a matching plaintext fixture and attack the entry |
-| Entry is deflated | Match the compressed entry bytes; do not pass an unrelated uncompressed file |
-| WinZip AES or another modern encryption mode | `bkcrack` is not the right primitive; re-route |
-| Upload reaches an application parser or extractor | Use `competition-file-parser-chain` |
-| Archive is only a carrier for hidden media data | Use `competition-stego-media` |
 
 ## Minimal Inspection
 

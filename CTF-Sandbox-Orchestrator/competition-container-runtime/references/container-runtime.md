@@ -36,5 +36,4 @@ Inspect side by side:
 ## Common Pitfalls
 
 - treating checked-in manifests as deployment truth
-- stopping at “secret is mounted” without proving the consuming process
 - missing sidecar or init output because only the main service was inspected

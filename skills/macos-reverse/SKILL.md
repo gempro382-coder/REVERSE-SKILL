@@ -6,9 +6,6 @@ description: Use for authorized macOS and Mach-O reverse engineering including c
 # macOS / Mach-O Reverse Engineering
 
 
-- .app bundle、LaunchAgent/Daemon
-
-
 ```bash
 file target
 codesign -dv --verbose=4 target
@@ -31,13 +28,4 @@ otool -L target
 ```
 
 
-|------|------|
-| class-dump / dsdump | ObjC |
-| jtool2 | Mach-O |
-
-
 - `references/macho-triage.md`
-- `../mobile-reverse/`（iOS） `../ghidra-reverse/` `../malware-analysis/`
-
-
-- [ ] Checklist？

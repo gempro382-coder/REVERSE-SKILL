@@ -1,8 +1,5 @@
 
 
-|------|------|---------|------|
-
-
 ```bash
 # 目录发现
 ffuf -u https://target.example.com/api/v1/FUZZ -w /path/to/SecLists/Discovery/Web-Content/api/api-endpoints.txt -rate 10

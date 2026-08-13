@@ -47,7 +47,3 @@ status: pending | in_progress | blocked | done | cancelled
 - [ ] Report exported via docs-generator
 - [ ] field-journal written (anonymized)
 ```
-
-
-| Skill | MUST |
-|-------|------|

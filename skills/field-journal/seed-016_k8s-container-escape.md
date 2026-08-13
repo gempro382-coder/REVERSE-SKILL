@@ -27,9 +27,6 @@
    - container runtime socket (containerd / dockerd)
 
 
-|------|------|---------|------|
-
-
 ```bash
 # 拉 deepce（不依赖任何东西）
 wget https://github.com/stealthcopter/deepce/raw/main/deepce.sh

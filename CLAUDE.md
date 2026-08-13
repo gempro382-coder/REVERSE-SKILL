@@ -9,14 +9,10 @@ This repository is a **task skill router** for authorized reverse engineering, m
 Routing order:
 
 1. `skills/MASTER-ROUTING.md` or `skills/scripts/master-route.ps1 -Hint "..."`
-2. `skills/scripts/case-init.ps1` → current analysis project's `work/<case>/scope.md` (must grant auth before ACT)
 3. `skills/routing.md` when ambiguous; roles in `skills/ops/role-map.md`
 4. Open PRIMARY `SKILL.md` and execute ACTION REQUIRED
-5. Timeline/workitems + Evidence→Finding→Path (`skills/ops/`)
 6. `skills/tool-index.md` for real tool paths (never guess)
-7. Missing tool → `skills/scripts/bootstrap-reverse.ps1` (manifest capabilities only)
 
-**Identity**: lightweight skill router — see `skills/ops/IDENTITY.md` (not a Z3r0 platform).
 
 ## First-Run Setup
 

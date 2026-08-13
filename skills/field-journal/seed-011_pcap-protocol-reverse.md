@@ -1,11 +1,7 @@
 
 
    ```bash
-   xxd dump.bin | head -20
    ```
-
-
-|------|------|---------|------|
 
 
 ```python
@@ -67,6 +63,3 @@ ent dump.bin                    # 数值
 3. 拆字段（固定头、长度、payload、校验）
 4. 验加密（熵 + 找 nonce + 二进制反查 send 函数）
 ```
-
-
-- Kali / Ubuntu，Wireshark 4.x, Python 3.10+, scapy 2.5

@@ -30,22 +30,6 @@ python3 skills/case-review/scripts/review_case.py work/<case> --verify-hashes --
 ```
 
 
-|------|------|
-| `reverse-engineering/references/re-agent-workflow.md` | RE：triage→static→dynamic→synthesis |
-
-
-|----|------|---------|
-| **R1** | APK / smali / jadx / apktool | `apk-reverse/` |
-| **R2** | IPA / iOS / Objection / MobSF / mobile | `mobile-reverse/` |
-| **R5** | .NET / dnSpy / de4dot / ConfuserEx | `dotnet-reverse/` |
-| **R7** | radare2 / r2 | `radare2/` |
-| **R24** | Windows / AD / Kerberos / AD CS | `windows-ad/` |
-| **R31** | macOS / Mach-O | `macos-reverse/` |
-
-
-|------|------|
-
-
 ```text
 RULES.md → MASTER-ROUTING.md → PRIMARY SKILL.md
   → (可选) routing.md 三轴 / field-journal

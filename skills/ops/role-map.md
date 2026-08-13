@@ -1,8 +1,5 @@
 
 
-|------|------------------|------|----------------------|
-
-
 ```text
 1. 输出 PRIMARY（master-route）+ lead_role=lead
 2. 写 scope.md（ops/scope-contract）
@@ -10,9 +7,6 @@
 4. 每阶段结束：更新 timeline + workitems；决定继续/换角色/出报告
 5. 禁止跳过 scope 直接 cpe 扫生产
 ```
-
-
-|---------|------|--------|
 
 
 ```text

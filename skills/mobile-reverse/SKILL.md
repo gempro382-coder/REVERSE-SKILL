@@ -139,6 +139,4 @@ Interceptor.attach(Module.findExportByName("libcommonCrypto.dylib", "CCCrypt"), 
 ```
 
 
-|------|:--:|------|
-
 > A=Android, I=iOS

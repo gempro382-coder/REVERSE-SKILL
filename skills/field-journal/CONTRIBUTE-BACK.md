@@ -32,9 +32,6 @@
 ```
 
 
-|------|------|
-
-
 ```bash
 # 1. Fork 主仓库（如果还没 fork）
 gh repo fork &lt;你的GitHub用户名&gt;/&lt;仓库名&gt; --clone=false

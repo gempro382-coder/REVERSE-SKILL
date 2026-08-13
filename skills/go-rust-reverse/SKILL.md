@@ -30,12 +30,6 @@ description: Use for reverse engineering stripped Go and Rust binaries including
 ```
 
 
-|------|------|
-
-
 - `references/go-rust-notes.md`
 - `../reverse-engineering/go-reverse.md` `../ida-reverse/` `../ghidra-reverse/`
 - seed: `field-journal/seed-002_go-malware-stripped.md`
-
-
-- [ ] Checklist？

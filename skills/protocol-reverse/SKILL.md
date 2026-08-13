@@ -9,9 +9,6 @@ description: Use for authorized reverse engineering of custom binary protocols, 
 - Protobuf / gRPC / FlatBuffers / MessagePack
 
 
-|------|------|
-
-
 ```text
 □ 拿到样本：PCAP / 代理导出 / 客户端日志 / 二进制
 □ 标记方向：C→S / S→C；是否有握手、心跳、重连
@@ -44,6 +41,3 @@ MUST 产出：
 - 至少 1 条可复现的解码命令或脚本
 - Evidence：原始 hex 摘录 + 解码结果（脱敏）
 ```
-
-
-|------|------|------|------|

@@ -76,7 +76,6 @@ unzip WonderSMS.apk -d extracted/
 ls extracted/lib/x86_64/  # Prefer this over arm64-v8a for static analysis
 ```
 
-**Key insight:** `RegisterNatives` is a deliberate obfuscation technique — it decouples Java method names from native symbol names, making it impossible to find handlers by string search alone. Always check `JNI_OnLoad` first when reversing Android native libraries with stripped symbols.
 
 **Detection:** Native method declared in Java + no matching JNI symbol in `.so` + `JNI_OnLoad` present. The library is typically stripped (no debug symbols).
 
@@ -197,7 +196,6 @@ TIMING = {
 # (H[19]+H[21]+H[56]+H[69]) mod 32 = 0
 ```
 
-**Key insight:** Hardware challenges require understanding the exact timing model — each operation takes a specific number of clock cycles, and shift registers record history at fixed tap positions. Work backward from the required tap values to determine what action must have occurred at each cycle. The solution is often a specific sequence notation (e.g., `I9C_SP6_CNL_I2C_SP2_I6C_SP6_SP6_SP5_CNL_I4C_SP1`).
 
 **Detection:** Look for `.v` or `.sv` (Verilog/SystemVerilog) files, `always @(posedge clk)` blocks, shift register patterns, and state machine `case` statements with hidden conditions gated on history values.
 
@@ -208,7 +206,6 @@ TIMING = {
 See [patterns-ctf-2.md](patterns-ctf-2.md#prefix-hash-brute-force-nullcon-2026) for the full technique. This section covers language-specific considerations.
 
 **Language-specific notes:**
-- Hash algorithm may be uncommon (MD2, custom) — don't need to identify it, just match outputs by running the binary
 - Use `subprocess.run()` with `timeout=2` to handle binaries that hang on bad input
 - For stripped binaries, check if `ltrace` reveals the hash function name (e.g., `MD2_Update`)
 
@@ -302,7 +299,6 @@ def decrypt_flag(encrypted_flag, password):
 
 ## Node.js npm Package Runtime Introspection (RootAccess2026)
 
-**Pattern (RootAccess CLI):** Obfuscated npm package with RC4 encoding, control flow flattening, and flag split across multiple fragments. Static analysis is impractical — use runtime introspection instead.
 
 **Dynamic analysis approach:**
 ```javascript
@@ -340,7 +336,6 @@ const hidden = Object.getOwnPropertyNames(Engine)
 console.log('Hidden methods:', hidden);
 ```
 
-**Key insight:** Heavily obfuscated JavaScript (control flow flattening, RC4 string encoding, dead code) makes static analysis prohibitively slow. Runtime introspection via `Object.getOwnPropertyNames()` reveals all methods including hidden ones. The module's own decryption runs automatically when loaded — just call the decoded functions directly.
 
 **Detection:** npm package with minified/obfuscated `dist/` directory, challenge says "reverse engineer the CLI tool", `package.json` with custom commands.
 
@@ -358,9 +353,6 @@ Java.perform(function() {
 });
 ```
 
-Calling `hName()` and `hVal()` returns the HTTP header name and value needed to bypass the server-side check — no cert pinning bypass required because the secret is in the class methods themselves.
-
-**Key insight:** Frida can invoke native JNI methods directly on a loaded class — no need to bypass cert pinning at network layer or fully reverse the native binary.
 
 **References:** h1702ctf 2017
 
@@ -422,7 +414,6 @@ apktool b target_decompiled/ -o target_patched.apk
 # Sign and install
 ```
 
-**Key insight:** For JNI signing: memory-dump the decrypted key region during execution, then patch smali to sign desired parameters — avoids fully reversing the native signing algorithm.
 
 **References:** HackIT CTF 2017
 
@@ -459,7 +450,6 @@ flag = ''.join(ascii_data[i] for i in range(0, len(ascii_data), 4)
 Intel SGX enclave `.so` files expose an ECALL dispatch table. The enclave logic (including key derivation) is fully reversible with IDA since SGX code is standard x86-64.
 
 **Workflow:**
-1. Locate the ECALL table in the `.so` — a function pointer array indexed by ECALL number
 2. Decompile ECALLs with IDA to identify the remote attestation protocol
 3. Implement the attestation protocol manually in Python using `sgx_crypto_wrapper`
 4. Key derivation: ECDH over P-256 followed by CMAC-AES-128 to derive the session key (SK)
@@ -481,6 +471,5 @@ sk = c.finalize()
 # Decrypt flag with AES-128-GCM using derived SK
 ```
 
-**Key insight:** SGX remote attestation key derivation is deterministic given the enclave measurement — reimplementing the protocol in Python recovers the same session key.
 
 **References:** Pwn2Win CTF 2017

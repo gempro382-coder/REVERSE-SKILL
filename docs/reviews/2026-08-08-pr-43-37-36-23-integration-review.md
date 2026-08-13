@@ -1,8 +1,5 @@
 
 
-|---|---|---|---|
-
-
 ```mermaid
 flowchart LR
     C["任意宿主 / CLI / Agent"] --> A["可选适配层"]
@@ -14,9 +11,3 @@ flowchart LR
     T --> W["Windows CI"]
     T --> L["Linux CI"]
 ```
-
-
-|---|---:|---:|---:|
-
-
-|---|---|

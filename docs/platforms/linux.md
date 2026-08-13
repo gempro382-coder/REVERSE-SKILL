@@ -28,23 +28,6 @@ python3 -m pipx ensurepath
 
 ## Tool installation matrix
 
-| Capability | Preferred Linux setup | Alternative | Notes |
-|---|---|---|---|
-| Java / JDK | `sudo apt install openjdk-17-jdk` | SDKMAN / vendor JDK | Required by jadx, apktool, BurpSuite, Ghidra. |
-| Node.js | NodeSource or `nvm` | distro `nodejs npm` | Distro Node can be old; MCP servers often prefer recent Node. |
-| Python tools | `pipx install <tool>` | project venv | Avoid global `pip install` on PEP 668 systems. |
-| jadx | GitHub release ZIP | custom install under `~/tools/jadx` | Ubuntu apt may not have `jadx`. |
-| apktool | `sudo apt install apktool` | official `apktool.jar` + wrapper | Distro package may be old. |
-| adb | `sudo apt install adb` | official Android platform-tools | Use official platform-tools for latest devices. |
-| Frida | `pipx install frida-tools` | venv + `pip install frida-tools` | Provides `frida`, `frida-ps`, `frida-trace`. |
-| radare2 | GitHub release / build from source | distro package when available | Ubuntu 22.04 may not provide a candidate. |
-| Ghidra | GitHub release ZIP | Flatpak / distro package | Java required. |
-| IDA Pro | manual Linux installer | — | Commercial tool; set `IDADIR` or document local path. |
-| BurpSuite | manual installer / jar | distro package if available | Load `burp-mcp-full` extension manually. |
-| jshookmcp | `npx -y @jshookmcp/jshook@0.3.4` | MCP config command | Requires Node/npm/npx. |
-| anything-analyzer | project clone + `pnpm install` | custom local service | Register its MCP endpoint in the Agent client. |
-| nuclei | GitHub release / `go install` | distro package if available | Often absent in Ubuntu apt. |
-| SecLists | `git clone https://github.com/danielmiessler/SecLists ~/tools/SecLists` | distro package if available | Keep path in tool index. |
 
 ## Recommended path layout
 

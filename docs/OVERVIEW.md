@@ -48,23 +48,9 @@ Report + field journal
 
 ## Core capabilities
 
-| Capability | Description |
-|---|---|
-| Skill Router | Routes tasks by target type, user intent, and toolchain requirements. |
-| Tool Orchestration | Connects jadx, apktool, Frida, radare2, IDA, BurpSuite, browsers, and scripts. |
-| MCP Integration | Exposes BurpSuite, IDA, browser analysis, and other execution surfaces to Agents. |
-| Bootstrap Scripts | Detects local tool status and guides automatic or manual setup. |
-| Field Journal | Stores reusable lessons, commands, pitfalls, and patterns after tasks. |
-| Report Generation | Produces analysis reports, diagrams, attack paths, and CTF writeups. |
 
 ## Platform support
 
-| Platform | Status | Entry |
-|---|---|---|
-| Windows | Full primary path | `README.md`, PowerShell scripts |
-| Kali Linux | Specialized support | `kali/README-kali.md` |
-| Ubuntu / Debian Linux | Generic support | `platforms/linux.md`, `skills/scripts/bootstrap-reverse.sh`, `skills/scripts/refresh-tool-index.sh` |
-| macOS | Generic support | `platforms/macos.md`, `skills/scripts/bootstrap-reverse.sh`, `skills/scripts/refresh-tool-index.sh` |
 
 See [PLATFORMS.md](PLATFORMS.md) for the full platform matrix. Ordinary Linux and macOS users can list bootstrap capabilities with:
 
@@ -92,18 +78,6 @@ The repository is not tied to one client. Its core assets are `RULES.md`, `skill
 
 ## Supported scenarios
 
-| Scenario | Main entry |
-|---|---|
-| APK / Android analysis | `skills/apk-reverse/`, `skills/mobile-reverse/` |
-| Binary reverse engineering | `skills/ida-reverse/`, `skills/radare2/`, `skills/reverse-engineering/` |
-| Frontend JS signing / parameter analysis | `skills/js-reverse/` |
-| HTTP traffic / request replay | BurpSuite MCP, anything-analyzer, browser automation |
-| CTF / security competitions | `CTF-Sandbox-Orchestrator/` |
-| Firmware / IoT analysis | `skills/firmware-pentest/` |
-| Patch diff / N-day analysis | `skills/patch-diff-exploit/` |
-| Security-testing toolchain | `skills/pentest-tools/` |
-| LLM / Agent security | `skills/llm-security/` |
-| Reports and diagrams | `skills/docs-generator/`, `skills/diagram-generator/` |
 
 ## Example workflow
 
@@ -212,4 +186,3 @@ Keywords: AI Agent, Skill Router, Tool Orchestration, MCP, Workflow Automation, 
 ## License
 
 MIT License. See [LICENSE](../LICENSE).
-

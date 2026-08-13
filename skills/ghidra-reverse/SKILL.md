@@ -6,9 +6,6 @@ description: Use for free/open reverse engineering with Ghidra (headless or GUI)
 # Ghidra Reverse Engineering
 
 
-|------|------|
-
-
 ```text
 □ 新建 Project → Import 文件 → Analyze（默认分析器）
 □ 记录语言/编译器识别结果与基址
@@ -36,11 +33,5 @@ analyzeHeadless /path/to/project Proj -import sample.bin -postScript ExportDecom
 ```
 
 
-|------|------|------|
-
-
 - `references/ghidra-cheatsheet.md`
 - `../ida-reverse/` `../radare2/` `../binary-diff/`
-
-
-- [ ] Checklist / journal？

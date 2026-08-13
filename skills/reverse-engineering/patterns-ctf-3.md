@@ -31,7 +31,6 @@
 **Identification:**
 - Single-line Python with semicolons separating statements
 - Walrus operator `:=` chains: `(x := expr)`
-- Obfuscated XOR: `(x | i) & ~(x & i)` instead of `x ^ i`
 - Input treated as a single large integer, decomposed via bit-shifting
 
 **Z3 solution:**
@@ -54,7 +53,6 @@ if s.check() == sat:
     flag = val.to_bytes(n_bytes, 'big').decode('ascii')
 ```
 
-**Key insight:** Single-line Python obfuscation creates a boolean circuit over input bits. The walrus operator chains are just variable assignments — split on semicolons and translate each to Z3 symbolically. Obfuscated XOR `(a | b) & ~(a & b)` is just `a ^ b`. Z3 solves these circuits in under a second. Look for `__builtins__` access or `ord()`/`chr()` calls to identify the input→integer conversion.
 
 **Detection:** Single-line Python with 1000+ semicolons, walrus operators, bitwise operations, and a final comparison to 0 or True.
 
@@ -101,9 +99,6 @@ for start_val in range(0x10000):
             break
 ```
 
-**Key insight:** Sliding window popcount differences create a recurrence relation: each new bit is determined by the bit 16 positions back plus the popcount delta. Only the first 16 bits are free (constrained by initial popcount). Brute-force the ~4000-8000 valid initial windows — for each, the entire bit sequence is deterministic. Runs in under a second.
-
-**Detection:** Binary computing popcount/hamming weight on fixed-size windows. Expected value array with length ≈ input_bits - window_size + 1. Values in array are small integers (0 to window_size).
 
 ---
 
@@ -195,7 +190,6 @@ To find event handlers in MFC (Microsoft Foundation Class) applications:
 
 1. **Break on SendMessageW:** Set breakpoint on `user32!SendMessageW` to intercept dialog messages
 2. **Filter for WM_COMMAND:** Message ID 0x111 indicates button clicks and control events
-3. **Trace message map:** Follow the MFC message dispatch from `CWnd::OnWndMsg` → `CCmdTarget::OnCmdMsg` → handler function
 4. **OnInitDialog:** Often contains decryption or validation setup; triggered by WM_INITDIALOG (0x110)
 
 ```asm
@@ -253,7 +247,6 @@ int solve_block(uint32_t old_key, uint32_t expected_key, unsigned char *out) {
 // Compile: gcc -O3 -march=native -fopenmp -o solve solve.c
 ```
 
-**Key insight:** When a transformation is intentionally non-invertible (iterated hash-like function), brute-force is the intended solution. OpenMP parallelization is critical — 287 blocks x 16.7M candidates each takes minutes parallelized vs hours single-threaded. The sequential key dependency means blocks must be solved in order, but each individual block search is embarrassingly parallel.
 
 ---
 
@@ -356,7 +349,6 @@ def decode_font_ligatures(font_path, encoded_text):
 
 **Self-modifying code:** Phase 1 (decryption) uses STORE opcode to XOR-patch program memory that Phase 2 (drawing) then executes. The decryption overwrites SET instructions with correct pixel color values before the drawing code runs.
 
-**Why GPU rendering fails:** The GPU runs all pixels in parallel per frame, but the shader tracks only ONE write target per pixel per frame. With multiple VRAM writes per frame, only the last survives — losing 75%+ of pixels. Similarly, STORE patches conflict during parallel decryption.
 
 **Solve via sequential emulation:**
 ```python
@@ -387,7 +379,6 @@ vram = np.zeros((128, 256), dtype=np.uint8)
 Image.fromarray(vram, mode='L').save('output.png')
 ```
 
-**Key insight:** GLSL shaders are Turing-complete but GPU parallelism causes write conflicts. Self-modifying code (STORE patches) compounds the problem — patches from parallel executions overwrite each other. Sequential emulation in Python recovers the full output. The program.png file IS the bytecode.
 
 **Detection:** WebGL/shader challenge with a PNG "program" file, challenge says "nothing renders" or output is garbled. Look for custom opcode tables in GLSL source.
 
@@ -594,8 +585,6 @@ sudo ntpdate pool.ntp.org
 JavaScript challenge embeds ARM bytecode in image pixel data. The image is base64-encoded in the HTML/JS source. Pixel RGBA values encode ARM instructions. A bundled UnicornJS library (ARM CPU emulator in JavaScript) extracts and executes the bytecode.
 
 **Identification flow:**
-1. Find base64 blob in JS source → decode → PNG/BMP file
-2. Identify UnicornJS import (`unicorn.js`, `uc.js`, or similar) → confirms ARM emulation
 3. Pixel extraction loop: RGBA bytes concatenated in raster order form the ARM instruction stream
 4. Feed the extracted bytes to an ARM disassembler
 
@@ -615,7 +604,6 @@ for insn in md.disasm(arm_code, 0x0):
     print(f"0x{insn.address:04x}: {insn.mnemonic} {insn.op_str}")
 ```
 
-**Key insight:** Multi-layer obfuscation: ARM code in image pixels, base64 encoded, emulated via UnicornJS at runtime. Identify the emulator library first to know which ISA to reverse — the library name reveals the architecture.
 
 **References:** Hack.lu CTF 2017
 
@@ -660,7 +648,6 @@ def solve_psadbw_group(known_constants, expected_sum, printable_range=(0x20, 0x7
 # (flag format prefix, character frequency, subsequent iterations)
 ```
 
-**Key insight:** `psadbw` creates sum-of-absolute-difference equations — not purely linear but solvable with constrained brute-force when bytes are limited to printable ASCII. Each 2-byte group is independent, keeping the search space to 95^2 = ~9000 candidates per group.
 
 **References:** CSAW CTF 2017
 

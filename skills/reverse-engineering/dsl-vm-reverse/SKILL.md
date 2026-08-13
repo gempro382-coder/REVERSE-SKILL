@@ -10,11 +10,6 @@ description: Reverse JavaScript-based custom DSL/VM interpreters, non-standard W
 ---
 
 
-|---|------|------|
-
-
-|------|-----------|------|
-
 ---
 
 
@@ -188,8 +183,6 @@ const token = fakeEnv.AWSCInner._modules['fy'].getToken({});
 ---
 
 
-|--------|---------|------|
-
 ---
 
 
@@ -250,15 +243,10 @@ async function run() {
 ---
 
 
-|------|------|------|
-
 ---
 
 
 ---
-
-
-|------|------|
 
 
 ```

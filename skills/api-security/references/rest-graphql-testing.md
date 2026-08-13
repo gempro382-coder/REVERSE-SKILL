@@ -39,9 +39,6 @@ GET /graphql?query=mutation+{+deleteUser(id:1)+}
 ```
 
 
-|------|-----|------|-----|-------|--------|---------|
-
-
 ```json
 // NoSQL 注入
 {"username": {"$gt": ""}, "password": {"$ne": ""}}

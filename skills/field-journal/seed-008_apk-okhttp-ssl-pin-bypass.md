@@ -1,12 +1,7 @@
 
 
    ```bash
-   adb shell "ps -A | grep com.target.app"
-   frida-ps -U | grep target
    ```
-
-
-|------|------|---------|------|
 
 
 ```javascript

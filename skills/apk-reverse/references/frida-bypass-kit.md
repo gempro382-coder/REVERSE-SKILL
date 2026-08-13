@@ -17,6 +17,3 @@ adb shell su -c /data/local/tmp/frida-server &
 # 注入目标 APP
 frida -U -f com.example.app -l FridaBypassKit.js
 ```
-
-
-|------|------|------|

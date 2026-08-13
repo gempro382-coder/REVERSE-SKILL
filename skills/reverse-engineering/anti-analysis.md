@@ -270,9 +270,6 @@ void NTAPI TlsCallback(PVOID DllHandle, DWORD Reason, PVOID Reserved) {
 PIMAGE_TLS_CALLBACK callbacks[] = { TlsCallback, NULL };
 ```
 
-**Detection in IDA/Ghidra:** Check PE TLS Directory → AddressOfCallBacks. Functions listed there run before EP.
-
-**Bypass:** Set breakpoint on TLS callback in x64dbg (Options → Events → TLS Callbacks), or patch the TLS directory entry.
 
 ### Hardware Breakpoint Detection
 
@@ -491,7 +488,6 @@ if (memcmp(hash, expected_hash, 32) != 0) exit(1);
 1. **Hardware breakpoints** (don't modify code, DR0-DR3)
 2. **Patch the comparison** to always succeed
 3. **Hook the hash function** to return expected value
-4. **Emulate** instead of debug (Unicorn/Qiling — no code modification)
 5. **Snapshot + restore:** dump memory before and after, diff to find checks
 
 **Self-checksumming in loops:**
@@ -557,7 +553,6 @@ Functions split into non-contiguous chunks connected by unconditional jumps. Def
 
 Beyond basic switch-case (see patterns.md): modern OLLVM variants use:
 - **Bogus control flow:** Fake branches with opaque predicates
-- **Instruction substitution:** `a + b` → `a - (-b)`, `a ^ b` → `(a | b) & ~(a & b)`
 - **String encryption:** Strings decrypted at runtime, cleared after use
 
 
@@ -615,7 +610,6 @@ void sigill_handler(int sig, siginfo_t *info, void *ucontext) {
 
 ## SIGFPE Signal Handler Side-Channel via strace Counting (PlaidCTF 2017)
 
-Binary uses SIGFPE signal handlers for control flow, making static analysis unreliable. Brute-force by counting SIGFPE signals via strace — correct input characters produce more signals.
 
 ```bash
 # Count SIGFPE signals per input character guess
@@ -633,11 +627,9 @@ done
 
 ## Instruction Trace Inversion with Keystone and Unicorn (MeePwn CTF 2017)
 
-UPX-packed binary applies a sequence of arithmetic-only transforms (sub, add, xor, rol, ror) to the flag. No memory side-effects — purely register arithmetic. IDAPython traces non-jump instructions, the sequence is then inverted to recover the flag.
 
 **Inversion rules:**
 - Reverse the instruction sequence (last instruction first)
-- Swap inverse pairs: `add ↔ sub`, `rol ↔ ror`, `xor` is self-inverse
 
 ```python
 # IDAPython: collect non-jump instructions in the obfuscated routine
@@ -685,7 +677,6 @@ flag_bytes = uc.reg_read(UC_X86_REG_RAX).to_bytes(8, 'little')
 
 **PEB anti-debug note:** If the binary reads `PEB.BeingDebugged` and uses it to select between two comparison target values, the traced instructions under IDAPython may use the debug-mode target. Patch `BeingDebugged` to 0 before tracing, or identify both branches and use the non-debug target value.
 
-**Key insight:** Arithmetic-only obfuscation (no memory writes) is fully reversible by tracing, inverting the instruction sequence, and swapping inverse operations. PEB anti-debug can silently change comparison targets — always verify which branch is taken.
 
 **References:** MeePwn CTF 2017
 
@@ -728,12 +719,6 @@ def reverse_processing(byte):
 
 ### Universal Bypass Checklist
 
-1. **Identify all anti-analysis checks** — search for: `ptrace`, `IsDebuggerPresent`, `rdtsc`, `cpuid`, `NtQuery`, `GetTickCount`, `CheckRemoteDebuggerPresent`, `/proc/self`, `SIGTRAP`, `alarm`
-2. **Static patching** — NOP/patch checks with pwntools or Ghidra before running
-3. **LD_PRELOAD** (Linux) — hook libc functions returning fake values
-4. **ScyllaHide** (Windows x64dbg) — patches PEB, hooks NT functions automatically
-5. **Emulation** (Unicorn/Qiling) — no debugger artifacts to detect
-6. **Kernel-level bypass** — modify `/proc/sys/kernel/yama/ptrace_scope`, use `prctl`
 
 ### Layered Anti-Debug (Real-World Pattern)
 
@@ -749,20 +734,3 @@ Many CTF challenges stack multiple checks:
 **Approach:** Identify ALL checks before patching. Patch or hook each one systematically. Run under emulator if too many to patch individually.
 
 ### Quick Reference: Check to Bypass
-
-| Anti-Debug Check | Platform | Bypass |
-|---|---|---|
-| `ptrace(TRACEME)` | Linux | `LD_PRELOAD`, patch to `ret 0`, `catch syscall` |
-| `IsDebuggerPresent` | Windows | ScyllaHide, Frida hook, PEB patch |
-| `NtQueryInformationProcess` | Windows | ScyllaHide, hook ntdll |
-| `rdtsc` timing | Both | NOP rdtsc, Frida time hook, Pin |
-| `/proc/self/status` | Linux | Mount namespace, hook fopen |
-| `alarm(N)` | Linux | `handle SIGALRM ignore` in GDB |
-| `SIGTRAP` handler | Linux | `handle SIGTRAP nostop pass` |
-| `SIGFPE` handler side-channel | Linux | `strace -e signal=SIGFPE` count per input |
-| TLS callback | Windows | Break on TLS in x64dbg, patch |
-| DR register scan | Windows | Use software BPs, hook GetThreadContext |
-| INT3 scan / CRC | Both | Hardware BPs, patch CRC comparison |
-| Frida detection | Both | Early-load gadget, hook strstr |
-| CPUID hypervisor | Both | Patch CPUID result, bare metal |
-| Thread hiding | Windows | Hook NtSetInformationThread |

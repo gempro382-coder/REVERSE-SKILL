@@ -1,20 +1,10 @@
 # reverse-skill v1.0.0
 
-**First formal release** — 2026-07-18
 
 AI-powered skill router for authorized reverse engineering, penetration testing, and security research.
 
 ## Highlights
 
-| Area | What you get |
-|------|----------------|
-| **PRIMARY path** | `MASTER-ROUTING.md` + `master-route.ps1` → correct skill in one hop |
-| **Ops contracts** | Scope / auth gate, Evidence→Finding→Path, roles, timeline |
-| **Case tooling** | `case-init` · `case-guard` · `append-evidence` · `smoke` · `verify-routing-coherence` |
-| **Skill matrix** | 20+ modules (APK, IDA, r2, JS, .NET, pwn, firmware, pentest, LLM, …) |
-| **Bootstrap** | On-demand toolchain install from `bootstrap-manifest.json` |
-| **Knowledge loop** | `field-journal` + docs-generator completion checklist |
-| **Platforms** | Windows primary; Linux / macOS / Kali supported paths |
 
 ## Install (quick)
 
@@ -46,5 +36,3 @@ powershell -NoProfile -ExecutionPolicy Bypass -File skills/scripts/verify-routin
 See [CHANGELOG.md](../CHANGELOG.md#100--2026-07-18).
 
 ## License
-
-MIT — see [LICENSE](../LICENSE).

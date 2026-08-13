@@ -1,6 +1,5 @@
 ---
 name: docs-generator
-description: |
   Creates task-oriented technical documentation with progressive disclosure. Use when writing READMEs, API docs, architecture docs, or markdown documentation.
   Also use this skill at the END of any completed reverse engineering, penetration testing, CTF, or security analysis task to generate a formal report in the user's project directory.
 ---
@@ -11,12 +10,6 @@ description: |
 For writing style, tone, and voice guidance, use `Skill(ce:writer)` with **The Engineer** persona.
 
 
-|---------|---------|
-
-
-|---------|---------|---------|
-
-
 ---
 
 ## Core Principles
@@ -25,12 +18,6 @@ For writing style, tone, and voice guidance, use `Skill(ce:writer)` with **The E
 
 Reveal information in layers:
 
-| Layer | Content | User Question |
-|-------|---------|---------------|
-| 1 | One-sentence description | What is it? |
-| 2 | Quick start code block | How do I use it? |
-| 3 | Full API reference | What are my options? |
-| 4 | Architecture deep dive | How does it work? |
 
 **Warnings, breaking changes, and prerequisites go at the TOP.**
 
@@ -68,11 +55,6 @@ Every concept needs a concrete example.
 
 ## Anti-Patterns
 
-| Problem | Fix |
-|---------|-----|
-| Wall of text | Break up with headings, bullets, code, tables |
-| Buried critical info | Warnings/breaking changes at TOP |
-| Missing error docs | Always document what can go wrong |
 
 ## Templates
 

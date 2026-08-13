@@ -1,17 +1,9 @@
 
 
-|------|----------|
-| jadx / apktool / adb / frida / frida-ps | Android |
-| idalib-mcp / idapro | IDA MCP |
-| ghidra-mcp | Ghidra |
-
 ```powershell
 powershell -File skills\scripts\bootstrap-reverse.ps1 -Capability @('jadx','nmap','yara') -StartServices
 powershell -File skills\scripts\refresh-tool-index.ps1
 ```
-
-
-|------|-------------------|
 
 
 ```text

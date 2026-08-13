@@ -7,9 +7,6 @@ metadata:
 ---
 
 
-|------|------|------|
-
-
 ```powershell
 # Windows
 file target.exe                       # "PE32 executable ... for MS Windows" 不够
@@ -28,9 +25,6 @@ strings target.exe | grep -iE "mscoree|_CorExeMain|mscorlib|System\\."
 diec target.exe                        # Detect It Easy CLI
 # 或拖进 dnSpyEx，看是否大量乱码类名 / 控制流变形
 ```
-
-
-|--------|------|------------|
 
 
 ```powershell
@@ -59,6 +53,3 @@ dnSpyEx → 右键方法 → Edit Method (C#) 或 Edit IL
   - 删除校验：nop 掉整段
 File → Save Module → 替换原文件
 ```
-
-
-- IL2CPP / NativeAOT（native）→ `reverse-engineering/`

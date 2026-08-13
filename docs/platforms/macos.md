@@ -32,23 +32,6 @@ python3 -m pipx ensurepath
 
 ## Tool installation matrix
 
-| Capability | Preferred macOS setup | Alternative | Notes |
-|---|---|---|---|
-| Java / JDK | `brew install openjdk` | Temurin / vendor JDK | Required by jadx, apktool, BurpSuite, Ghidra. |
-| Node.js | `brew install node` | `nvm` | Required by MCP bridges and JS tools. |
-| Python tools | `pipx install <tool>` | venv | Avoid polluting global Python. |
-| jadx | `brew install jadx` | GitHub release ZIP | Provides `jadx` and `jadx-gui`. |
-| apktool | `brew install apktool` | official jar + wrapper | Java required. |
-| adb | `brew install android-platform-tools` | Android Studio SDK | Provides `adb`. |
-| Frida | `pipx install frida-tools` | venv + `pip install frida-tools` | Provides `frida`, `frida-ps`, `frida-trace`. |
-| radare2 | `brew install radare2` | GitHub release / source | CLI reverse-engineering. |
-| Ghidra | `brew install ghidra` or `brew install --cask ghidra` | GitHub release ZIP | Formula/cask availability may vary. |
-| IDA Pro | manual app install | — | Usually under `/Applications/IDA Professional*.app`. |
-| BurpSuite | `brew install --cask burp-suite` | manual jar / installer | Load `burp-mcp-full` extension manually. |
-| jshookmcp | `npx -y @jshookmcp/jshook@0.3.4` | MCP config command | Requires Node/npm/npx. |
-| anything-analyzer | project clone + `pnpm install` | custom local service | Register its MCP endpoint. |
-| nuclei | `brew install nuclei` | GitHub release / Go install | Optional security scanner. |
-| SecLists | Git clone | — | Usually clone to `~/tools/SecLists`. |
 
 ## Recommended path layout
 

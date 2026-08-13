@@ -9,9 +9,6 @@
    ```
 
 
-|------|------|---------|------|
-
-
 ```typescript
 // hook.ts
 import "frida-il2cpp-bridge";

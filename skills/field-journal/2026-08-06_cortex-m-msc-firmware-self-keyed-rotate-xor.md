@@ -8,13 +8,7 @@
 - specialists: [cre, cce, doc]
 
 
-|---|---|---|---|
-
-
 - path_type: solve/callflow
-
-
-|---|---|---|---|
 
 
 ```text

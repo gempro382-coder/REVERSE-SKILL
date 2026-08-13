@@ -38,7 +38,6 @@ r2pm -ci r2ghidra   # Native Ghidra decompiler for radare2
 ```
 
 **Manual install:**
-- pwndbg — Linux: [GitHub](https://github.com/pwndbg/pwndbg), macOS: `brew install pwndbg/tap/pwndbg-gdb`
 
 ## Additional Resources
 
@@ -128,7 +127,6 @@ run
 
 ## Comparison Direction (Critical!)
 
-Two patterns: (1) `transform(flag) == stored_target` — reverse the transform. (2) `transform(stored_target) == flag` — flag IS the transformed data, just apply transform to stored target.
 
 ## Common Encryption Patterns
 

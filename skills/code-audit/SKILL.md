@@ -33,13 +33,4 @@ Finding：位置 + 数据流 + PoC + 修复建议
 ```
 
 
-|------|-----------|
-| Bandit | Python |
-| gosec / staticcheck | Go |
-| SpotBugs / FindSecBugs | Java |
-
-
 - `references/sast-review-checklist.md`
-
-
-- [ ] Checklist？

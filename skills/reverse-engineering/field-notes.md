@@ -129,7 +129,6 @@ Tauri embeds Brotli-compressed frontend assets in the executable. Find `index.ht
 Common checks:
 - `IsDebuggerPresent()` / PEB.BeingDebugged / NtQueryInformationProcess (Windows)
 - `ptrace(PTRACE_TRACEME)` / `/proc/self/status` TracerPid (Linux)
-- TLS callbacks (run before main — check PE TLS Directory)
 - Timing checks (`rdtsc`, `clock_gettime`, `GetTickCount`)
 - Hardware breakpoint detection (DR0-DR3 via GetThreadContext)
 - INT3 scanning / code self-hashing (CRC over .text section)
@@ -168,7 +167,6 @@ Binary uses UNIX signals as binary tree navigation; hook `sigaction` via `LD_PRE
 Flip `JNZ`/`JZ` (0x75/0x74), change sleep values, patch environment checks in Ghidra (`Ctrl+Shift+G`). See [patterns.md](patterns.md#malware-anti-analysis-bypass-via-patching).
 
 ### Expected Values Tables
-Locate with `objdump -s -j .rodata binary | less` — look near comparison instructions, size matches flag length.
 
 ### x86-64 Gotchas
 Sign extension and 32-bit truncation pitfalls. See [patterns.md](patterns.md#x86-64-gotchas) for details and code examples.
@@ -186,7 +184,6 @@ Nested shellcode with XOR decode loops; break at `call rax`, bypass ptrace with 
 Validation time varies per correct character; measure elapsed time per candidate to recover flag byte-by-byte. See [patterns.md](patterns.md#timing-side-channel-attack).
 
 ### Unstripped Binary Information Leaks
-**Pattern:** Debug info and file paths leak author identity. Quick checks: `strings binary | grep "/home/"` (home dirs), `file binary` (stripped?), `readelf -S binary | grep debug` (debug sections).
 
 ### Custom Mangle Function Reversing
 Binary mangles input 2 bytes at a time with running state; extract target from `.rodata`, write inverse function. See [patterns.md](patterns.md#custom-mangle-function-reversing).
@@ -203,7 +200,6 @@ Input converted to hex, compared against constant. Decode with `xxd -r -p`. See 
 ## CTF Case Notes
 
 ### Embedded ZIP + XOR License Decryption
-Binary with named symbols (`EMBEDDED_ZIP`, `ENCRYPTED_MESSAGE`) in `.rodata` → extract ZIP containing license, XOR encrypted message with license bytes to recover flag. No execution needed. See [patterns-ctf-2.md](patterns-ctf-2.md#embedded-zip-xor-license-decryption-metactf-2026).
 
 ### Stack String Deobfuscation (.rodata XOR Blob)
 Binary mmaps `.rodata` blob, XOR-deobfuscates, uses it to validate input. Reimplement verification loop with pyelftools to extract blob. Look for `0x9E3779B9`, `0x85EBCA6B` constants and `rol32()`. See [patterns-ctf-2.md](patterns-ctf-2.md#stack-string-deobfuscation-from-rodata-xor-blob-nullcon-2026).
@@ -212,10 +208,8 @@ Binary mmaps `.rodata` blob, XOR-deobfuscates, uses it to validate input. Reimpl
 Binary hashes every prefix independently. Recover one character at a time by matching prefix hashes. See [patterns-ctf-2.md](patterns-ctf-2.md#prefix-hash-brute-force-nullcon-2026).
 
 ### Mathematical Convergence Bitmap
-**Pattern:** Binary classifies coordinate pairs by Newton's method convergence (e.g., z^3-1=0). Grid of pass/fail results renders ASCII art flag. Key: the binary is a classifier, not a checker — reverse the math and visualize. See [patterns-ctf.md](patterns-ctf.md#mathematical-convergence-bitmap-ehax-2026).
 
 ### RISC-V Binary Analysis
-Statically linked, stripped RISC-V ELF. Use Capstone with `CS_MODE_RISCVC | CS_MODE_RISCV64` for mixed compressed instructions. Emulate with `qemu-riscv64`. Watch for fake flags and XOR decryption with incremental keys. See [tools.md](tools.md#risc-v-binary-analysis-ehax-2026).
 
 ### Kernel Module Maze Solving
 Rust kernel module implements maze via device ioctls. Enumerate commands dynamically, build DFS solver with decoy avoidance, deploy as minimal static binary (raw syscalls, no libc). See [patterns-ctf.md](patterns-ctf.md#kernel-module-maze-solving-dicectf-2026).
@@ -230,19 +224,15 @@ Binary validates flag via matrix multiplication with 64-bit coefficients; soluti
 ~200+ auto-generated functions routing input through polynomial comparisons. Script extraction via Ghidra headless rather than reversing each function manually. Constraint propagation from known output format cascades through arithmetic constraints. See [patterns-ctf-2.md](patterns-ctf-2.md#decision-tree-function-obfuscation-htb-wondersms).
 
 ### Android JNI RegisterNatives Obfuscation
-`RegisterNatives` in `JNI_OnLoad` hides which C++ function handles each Java native method (no standard `Java_com_pkg_Class_method` symbol). Find the real handler by tracing `JNI_OnLoad` → `RegisterNatives` → `fnPtr`. Use x86_64 `.so` from APK for best Ghidra decompilation. See [languages-platforms.md](languages-platforms.md#android-jni-registernatives-obfuscation-htb-wondersms).
 
 ### Multi-Layer Self-Decrypting Binary
-N-layer binary where each layer decrypts the next using user-provided key bytes + SHA-NI. Use oracle (correct key → valid code with expected pattern). JIT execution with fork-per-candidate COW isolation for speed. See [patterns-ctf-2.md](patterns-ctf-2.md#multi-layer-self-decrypting-binary-dicectf-2026).
 
 ### GLSL Shader VM with Self-Modifying Code
-**Pattern:** WebGL2 fragment shader implements Turing-complete VM on a 256x256 RGBA texture (program memory + VRAM). Self-modifying code (STORE opcode) patches drawing instructions. GPU parallelism causes write conflicts — emulate sequentially in Python to recover full output. See [patterns-ctf-3.md](patterns-ctf-3.md#glsl-shader-vm-with-self-modifying-code-apoorvctf-2026).
 
 ### GF(2^8) Gaussian Elimination for Flag Recovery
 **Pattern:** Binary performs Gaussian elimination over GF(2^8) with the AES polynomial (0x11b). Matrix + augmentation vector in `.rodata`; solution vector is the flag. Look for constant `0x1b` in disassembly. Addition is XOR, multiplication uses polynomial reduction. See [patterns-ctf-2.md](patterns-ctf-2.md#gf28-gaussian-elimination-for-flag-recovery-apoorvctf-2026).
 
 ### Z3 for Single-Line Python Boolean Circuit
-**Pattern:** Single-line Python (2000+ semicolons) with walrus operator chains validates flag as big-endian integer via boolean circuit. Obfuscated XOR `(a | b) & ~(a & b)`. Split on semicolons, translate to Z3 symbolically, solve in under a second. See [patterns-ctf-3.md](patterns-ctf-3.md#z3-for-single-line-python-boolean-circuit-bearcatctf-2026).
 
 ### Sliding Window Popcount Differential Propagation
 **Pattern:** Binary validates input via expected popcount for each position of a 16-bit sliding window. Popcount differences create a recurrence: `bit[i+16] = bit[i] + (data[i+1] - data[i])`. Brute-force ~4000-8000 valid initial 16-bit windows; each determines the entire bit sequence. See [patterns-ctf-3.md](patterns-ctf-3.md#sliding-window-popcount-differential-propagation-bearcatctf-2026).
@@ -257,7 +247,6 @@ N-layer binary where each layer decrypts the next using user-provided key bytes 
 **Pattern:** Kernel module registers binfmt handler for encrypted flat binaries. Reverse the `.ko` to find RC4 key (in `movabs` immediates), decrypt the flat binary, import at the fixed virtual address from the module's `vm_mmap` call. See [patterns-ctf.md](patterns-ctf.md#custom-binfmt-kernel-module-with-rc4-flat-binaries-bsidessf-2026).
 
 ### Hash-Resolved Imports / No-Import Ransomware
-**Pattern:** Binary with zero visible imports resolves APIs via symbol name hashing at runtime. Skip the hash reversing — hook OpenSSL functions via `LD_PRELOAD` in Docker to capture AES keys directly. See [patterns-ctf.md](patterns-ctf.md#hash-resolved-imports-no-import-ransomware-bsidessf-2026).
 
 ### ELF Section Header Corruption for Anti-Analysis
 **Pattern:** Corrupted section headers crash analysis tools but program headers are intact so binary runs normally. Patch `e_shoff` to zero or use `readelf -l` (program headers only). Flag hidden after corrupted sections with magic marker + XOR. See [patterns-ctf.md](patterns-ctf.md#elf-section-header-corruption-for-anti-analysis-bsidessf-2026).
@@ -266,16 +255,13 @@ N-layer binary where each layer decrypts the next using user-provided key bytes 
 **Pattern:** BF programs validating input have `,` (read char) followed by `+` operations whose count = expected ASCII value. Extract increment counts per input position to recover expected input without execution. See [languages.md](languages.md#brainfuck-character-by-character-static-analysis-bsidessf-2026).
 
 ### Brainfuck Side-Channel via Read Count Oracle
-**Pattern:** BF input validators read more bytes when a character is correct. Count `,` operations per candidate — highest read count = correct byte. Character-by-character recovery. See [languages.md](languages.md#brainfuck-side-channel-via-read-count-oracle-bsidessf-2026).
 
 ### Brainfuck Comparison Idiom Detection
 **Pattern:** Compiled BF uses fixed idioms for equality checks (`<[-<->] +<[>-<[-]]>[-<+>]`). Instrument interpreter to detect patterns and extract comparison operands (expected flag bytes). See [languages.md](languages.md#brainfuck-comparison-idiom-detection-bsidessf-2026).
 
 ### Backdoored Shared Library Detection
-Binary works in GDB but fails when run normally (suid)? Check `ldd` for non-standard libc paths, then `strings | diff` the suspicious vs. system library to find injected code/passwords. See [patterns-ctf.md](patterns-ctf.md#backdoored-shared-library-detection-via-string-diffing-hacklu-ctf-2012).
 
 ### Go Binary Reversing
-Large static binary with `go.buildid`? Use GoReSym to recover function names (works even on stripped binaries). Go strings are `{ptr, len}` pairs — not null-terminated. Look for `main.main`, `runtime.gopanic`, channel ops (`runtime.chansend1`/`chanrecv1`). Use Ghidra golang-loader plugin for best results. See [languages-compiled.md](languages-compiled.md#go-binary-reversing).
 
 ### Go Binary UUID Patching for C2 Enumeration
 **Pattern:** Go C2 client with UUID from `-ldflags -X`. Binary-patch UUID bytes (same length), register with C2, enumerate clients/files via API. See [languages-compiled.md](languages-compiled.md#go-binary-uuid-patching-for-c2-client-enumeration-bsidessf-2026).
@@ -284,7 +270,6 @@ Large static binary with `go.buildid`? Use GoReSym to recover function names (wo
 D language binaries have unique symbol mangling (not C++ style). Template-heavy, many function variants. Look for `_D` prefix in symbols. See [languages-compiled.md](languages-compiled.md#d-language-binary-reversing-csaw-ctf-2016).
 
 ### Rust Binary Reversing
-Binary with `core::panicking` strings and `_ZN` mangled symbols? Use `rustfilt` for demangling. Panic messages contain source paths and line numbers — `strings binary | grep "panicked"` is the fastest approach. Option/Result enums use discriminant byte (0=None/Err, 1=Some/Ok). See [languages-compiled.md](languages-compiled.md#rust-binary-reversing).
 
 ### Frida Dynamic Instrumentation
 Hook runtime functions without modifying binary. `frida -f ./binary -l hook.js` to spawn with instrumentation. Hook `strcmp`/`memcmp` to capture expected values, bypass anti-debug by replacing `ptrace` return value, scan memory for flag patterns, replace validation functions. See [tools-dynamic.md](tools-dynamic.md#frida-dynamic-instrumentation).
@@ -296,7 +281,6 @@ Hook runtime functions without modifying binary. `frida -f ./binary -l hook.js` 
 Automatic path exploration to find inputs satisfying constraints. Load binary with `angr.Project`, set find/avoid addresses, call `simgr.explore()`. Constrain input to printable ASCII and known prefix for faster solving. Hook expensive functions (crypto, I/O) to prevent path explosion. See [tools-dynamic.md](tools-dynamic.md#angr-symbolic-execution).
 
 ### Qiling Emulation
-Cross-platform binary emulation with OS-level support (syscalls, filesystem). Emulate Linux/Windows/ARM/MIPS binaries on any host. No debugger artifacts — bypasses all anti-debug by default. Hook syscalls and addresses with Python API. See [tools-dynamic.md](tools-dynamic.md#qiling-framework-cross-platform-emulation).
 
 ### VMProtect / Themida Analysis
 VMProtect virtualizes code into custom bytecode. Identify VM entry (pushad-like), find handler table (large indirect jump), trace handlers dynamically. For CTF, focus on tracing operations on input rather than full devirtualization. Themida: dump at OEP with ScyllaHide + Scylla. See [tools-advanced.md](tools-advanced.md#vmprotect-analysis).
@@ -305,7 +289,6 @@ VMProtect virtualizes code into custom bytecode. Identify VM entry (pushad-like)
 BinDiff and Diaphora compare two binaries to highlight changes. Essential when challenge provides patched/original versions. Export from IDA/Ghidra, diff to find vulnerability or hidden functionality. See [tools-advanced.md](tools-advanced.md#binary-diffing).
 
 ### Advanced GDB (pwndbg, rr)
-pwndbg: `context`, `vmmap`, `search -s "flag{"`, `telescope $rsp`. GEF alternative. Reverse debugging with `rr record`/`rr replay` — step backward through execution. Python scripting for brute-force and automated tracing. See [tools-advanced.md](tools-advanced.md#advanced-gdb-techniques).
 
 ### macOS / iOS Reversing
 Mach-O binaries: `otool -l` for load commands, `class-dump` for Objective-C headers. Swift: `swift demangle` for symbols. iOS apps: decrypt FairPlay DRM with frida-ios-dump, bypass jailbreak detection with Frida hooks. Re-sign patched binaries with `codesign -f -s -`. See [platforms.md](platforms.md#macos-ios-reversing).
@@ -314,7 +297,6 @@ Mach-O binaries: `otool -l` for load commands, `class-dump` for Objective-C head
 `binwalk -Me firmware.bin` for recursive extraction. Hardware: UART/JTAG/SPI flash for firmware dumps. Filesystems: SquashFS (`unsquashfs`), JFFS2, UBI. Emulate with QEMU: `qemu-arm -L /usr/arm-linux-gnueabihf/ ./binary`. See [platforms.md](platforms.md#embedded-iot-firmware-re).
 
 ### Kernel Driver Reversing
-Linux `.ko`: find ioctl handler via `file_operations` struct, trace `copy_from_user`/`copy_to_user`. Debug with QEMU+GDB (`-s -S`). eBPF: `bpftool prog dump xlated`. Windows `.sys`: find `DriverEntry` → `IoCreateDevice` → IRP handlers. See [platforms.md](platforms.md#kernel-driver-reversing).
 
 ### Swift / Kotlin Binary Reversing
 Swift: `swift demangle` symbols, protocol witness tables for dispatch, `__swift5_*` sections. Kotlin/JVM: coroutines compile to state machines in `invokeSuspend`, `jadx` with Kotlin mode for best decompilation. Kotlin/Native: LLVM backend, looks like C++ in disassembly. See [languages-compiled.md](languages-compiled.md#swift-binary-reversing).
@@ -344,7 +326,6 @@ Execution traces with only opcodes (no data) still leak info through branch deci
 Combat-simulation binary with thread-unsafe skill lock. Race between skill selection and damage calculation; `cdqe` sign-extends 0xFFFFFFFF to -1 (signed), causing HP overflow on subtraction. See [patterns-ctf-3.md](patterns-ctf-3.md#thread-race-condition-with-signed-integer-overflow-codegate-2017).
 
 ### ESP32/Xtensa Firmware Reversing
-No IDA support — use radare2 + ESP-IDF ROM linker script (`esp32.rom.ld`) for symbol resolution. Cross-reference with public ESP-IDF HTTP server examples to identify app logic. See [patterns-ctf-3.md](patterns-ctf-3.md#esp32xtensa-firmware-reversing-with-rom-symbol-map-insomnihack-2017).
 
 ### Custom VM Bytecode Lifting to LLVM IR
 Transpile custom VM bytecode to LLVM IR, then use `opt -O3` to simplify (inlining, constant folding, dead code elimination). Reduces 1300 lines to ~150 lines, revealing the underlying algorithm. See [tools-advanced.md](tools-advanced.md#custom-vm-bytecode-lifting-to-llvm-ir-google-ctf-2017).
@@ -412,33 +393,22 @@ print(f"admin_session={payload_b64}.{sig_b64}")
 Two-server phishing infrastructure impersonating a government agency. Full victim control system with server-driven status code redirection.
 
 **Architecture:**
-- `{target_domain_a}` — Presentation layer (phishing pages, JS polling client)
-- `{target_domain_b}` — Data layer (PHP+MySQL backend, admin panel)
 - Both behind NAT ({internal_ip} internal), nginx, SSL-only
 - Web root: `/www/wwwroot/{target_domain_b}/`
 
-**Victim Flow:** Landing page (fake subsidy quotas) → 1.html (ID/bank card form → `submit.php`) → 4.html (PIN → `get-ayment.php`) → server-controlled staged pages (9-16) via 1-second `status_check.php` polling.
 
 **Key Findings:**
-- Admin panel at `register.php` → `qichuang.php` (login form), `list.php` (dashboard template)
 - Auth via PHP session (`PHPSESSID`); `login.php` and `check_login_ajax.php` removed (404)
-- **Data leak**: `db.php` returns victim name list without auth (49+ records, **no bank details** — only id/username/note/description fields)
 - **No-auth write**: `save_note.php` accepts data without authentication
 - `backend.php` gives SQL error suggesting admin registration endpoint (broken)
 - Rate limiting on `submit.php` (multi-factor), no SQLi or session bypass found
 - Status code system: admin sets 1-16, victim browser auto-redirects to `N.html`
 
 **Infrastructure:**
-| Domain | Public IP | Role |
-|--------|-----------|------|
-| {target_domain_1} | {target_ip_1} | Backend + Admin |
-| {target_domain_2} | {target_ip_2} | Frontend (phishing pages) |
 
 
 ---
 
-
-|---------|---------|------|
 
 ```bash
 # 正确做法：用 file 命令
@@ -450,11 +420,6 @@ xxd suspicious_file.sh | head -1
 # 7f454c46 = ELF magic
 ```
 
-
-|-----------|---------|
-
-
-|------|-------------|
 
 ```bash
 # strace 跟踪系统调用（重点关注）

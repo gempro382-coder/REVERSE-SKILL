@@ -15,10 +15,4 @@ description: Use for authorized assessment of federated identity systems includi
 ```
 
 
-|------|------|
-
-
 - `references/sso-flow-checklist.md`
-
-
-- [ ] Checklist？

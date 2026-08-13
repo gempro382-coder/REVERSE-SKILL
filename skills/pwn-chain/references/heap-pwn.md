@@ -8,7 +8,6 @@
 strings ./libc.so.6 | grep "GNU C Library"
 ```
 
-|-----------|---------|------|
 
 ## tcache poisoning (2.27 - 2.31)
 
@@ -133,10 +132,6 @@ add(2, 0x100)  # 从 unsorted 取出 → unlink → main_arena+88 写到 target
 2.32 起也加了 chunk size 检查，但仍可用于改 global_max_fast、_IO_list_all 等
 高级技巧，常用于 House of Husk 等组合拳
 ```
-
-
-|------|---------|---------|
-| House of Apple | 2.34+ | _IO_wfile_jumps + setcontext gadget |
 
 
 ```text

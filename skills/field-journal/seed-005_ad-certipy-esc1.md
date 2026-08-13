@@ -16,9 +16,6 @@
    ```
 
 
-|------|------|---------|------|
-
-
 ```bash
 # AD CS 快速检测一条龙
 certipy find -u "$USER@$DOMAIN" -p "$PASS" -dc-ip "$DC" -stdout | grep -A5 "ESC"

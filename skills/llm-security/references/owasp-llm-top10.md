@@ -2,11 +2,8 @@
 
 ## OWASP Top 10 for LLM Applications v2.0 (2025)
 
-|---|------|---------|---------|
 
 ## OWASP Top 10 for Agentic Applications (ASI 2026)
-
-|---|------|---------|---------|
 
 
 - LLM01 Prompt Injection: ~45%

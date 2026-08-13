@@ -1,8 +1,5 @@
 
 
-|------|------|-----------|
-
-
 ```text
 1. dnSpyEx 打开（通常没混淆，少数团队会加 ConfuserEx）
 2. 看 Program.Main 或入口命令分发（Rubeus 是 switch(command) 结构）
@@ -73,9 +70,6 @@ brew install --cask dotnet-sdk
 
 
 ---
-
-
-|------|------|------|
 
 
 ```json

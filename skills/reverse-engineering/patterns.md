@@ -191,7 +191,6 @@ Run: `LD_PRELOAD=./hook.so ./binary`
 **Key insight:** Anti-debugging checks are the first obstacle in most reversing challenges. Look for `ptrace`, `IsDebuggerPresent`, or timing checks early in `main()` and patch or hook them before attempting deeper analysis.
 
 ### pwntools Binary Patching (Crypto-Cat)
-Patch out anti-debug calls directly using pwntools — replaces function with `ret` instruction:
 ```python
 from pwn import *
 
@@ -212,13 +211,8 @@ elf.asm(addr, 'mov eax, 1; ret')      # Return 1 (force success)
 ## Nanomites
 
 ### Linux (Signal-Based)
-- `SIGTRAP` (`int 3`) → Custom operation
-- `SIGILL` (`ud2`) → Custom operation
-- `SIGFPE` (`idiv 0`) → Custom operation
-- `SIGSEGV` (null deref) → Custom operation
 
 ### Windows (Debug Events)
-- `EXCEPTION_DEBUG_EVENT` → Main handler
 - Parent modifies child via `PTRACE_POKETEXT`
 - Magic markers: `0x1337BABE`, `0xDEADC0DE`
 
@@ -464,12 +458,9 @@ partial_key = bytes(a ^ b for a, b in zip(encrypted, prologue))
 **Pattern:** Output buffer depends on each input byte independently (no cross-byte coupling).
 
 **Detection:**
-- Change one input position → only one output position changes
-- Fill input with a single byte → output buffer becomes constant
 
 **Solve:**
 1. For each byte value 0..255, run the program with that byte repeated
-2. Record output byte → build mapping and inverse mapping
 3. Apply inverse mapping to static target bytes to recover the flag
 
 ---
@@ -514,7 +505,6 @@ loop_middle:
 1. Extract static target bytes from `.rodata` section
 2. Understand mangle: processes pairs with running state value
 3. Write inverse function (process in reverse, undo each operation)
-4. Feed target bytes through inverse → recovers flag
 
 **Key insight:** When a binary mangles input in pairs with running state and compares to a static target, extract the target from `.rodata` and write the inverse function. Process the target bytes in reverse order, undoing each operation, to recover the original input.
 
@@ -581,23 +571,10 @@ int sigaction(int signum, const struct sigaction *act, ...) {
 **Pattern (Carrot):** Malware with multiple environment checks before executing payload.
 
 **Common checks to patch:**
-| Check | Technique | Patch |
-|-------|-----------|-------|
-| `ptrace(PTRACE_TRACEME)` | Anti-debug | Change `cmp -1` to `cmp 0` |
-| `sleep(150)` | Anti-sandbox timing | Change sleep value to 1 |
-| `/proc/cpuinfo` "hypervisor" | Anti-VM | Flip `JNZ` to `JZ` |
-| "VMware"/"VirtualBox" strings | Anti-VM | Flip `JNZ` to `JZ` |
-| `getpwuid` username check | Environment | Flip comparison |
-| `LD_PRELOAD` check | Anti-hook | Skip check |
-| Fan count / hardware check | Anti-VM | Flip `JLE` to `JGE` |
-| Hostname check | Environment | Flip `JNZ` to `JZ` |
 
 **Ghidra patching workflow:**
 1. Find check function, identify the conditional jump
-2. Click on instruction → `Ctrl+Shift+G` → modify opcode
-3. For `JNZ` (0x75) → `JZ` (0x74), or vice versa
 4. For immediate values: change operand bytes directly
-5. Export: press `O` → choose "Original File" format
 6. `chmod +x` the patched binary
 
 **Server-side validation bypass:**
@@ -659,14 +636,7 @@ for pos in range(flag_length):
 **Pattern (A Golden Experience Requiem):** Multi-threaded binary with layered anti-analysis: Thread 1 performs decoy operations (fake AES + deliberate crash via `ud2`), Thread 2 does the real flag computation in a SIGSEGV signal handler using Mixed Boolean Arithmetic (MBA), Thread 3 erases memory to prevent post-mortem analysis.
 
 **Thread layout:**
-| Thread | Purpose | Trap |
-|--------|---------|------|
-| Thread 1 | Decoy: AES-looking operations → `ud2` crash | Analysts waste time reversing fake crypto |
-| Thread 2 | Real flag: SIGSEGV handler with MBA transforms | Hidden in signal handler, not main code path |
-| Thread 3 | Memory eraser: zeros out flag data after computation | Prevents memory dumping |
-| Main | rdtsc-based anti-debug timing check | Penalizes debugger-attached execution |
 
-**Solving approach — pure Python emulation of MBA logic:**
 ```python
 # MBA helpers (extracted from assembly)
 def mba_add(a, b): return (a + b) & 0xff
@@ -701,7 +671,6 @@ for i in range(40):  # flag length
 print(''.join(flag))
 ```
 
-**Key insight:** The real flag logic is in the signal handler (SIGSEGV/SIGILL), not the main thread. Thread 1's AES-like code and `ud2` crash are intentional misdirection. The `rdtsc` timing check detects debuggers and corrupts output. Bypass by extracting the MBA logic from assembly and reimplementing in Python — never run the binary under a debugger.
 
 **Detection indicators:**
 - Multiple `pthread_create` calls with different handler functions

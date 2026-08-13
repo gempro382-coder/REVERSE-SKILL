@@ -30,9 +30,6 @@ It MUST NOT perform reconnaissance, exploitation, dynamic instrumentation, or ta
 
 ## Tool dependencies
 
-| Tool | Required | Purpose | Auto-bootstrap |
-|------|----------|---------|---------------|
-| Python 3.9+ | Yes | Runs the read-only case review script | No, use the platform Python installation |
 
 No network access or third-party package is required.
 

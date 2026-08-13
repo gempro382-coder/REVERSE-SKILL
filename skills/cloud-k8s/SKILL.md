@@ -34,7 +34,6 @@ aws s3 ls
 □ 镜像历史与已知 CVE → Trivy
 ```
 
-### Phase 4 — Kubernetes
 
 ```bash
 kubectl auth can-i --list
@@ -48,9 +47,6 @@ kubectl get clusterrolebindings
 □ etcd / dashboard 暴露
 □ 网络策略是否默认放行
 ```
-
-
-|------|------|------|
 
 
 - `references/k8s-cloud-checklist.md`

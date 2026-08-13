@@ -15,12 +15,5 @@ description: Use for authorized hardware and embedded interface security researc
 ```
 
 
-|------|------|
-| USB-TTL / logic analyzer | UART |
-
-
 - `references/debug-interface-triage.md`
 - `../firmware-pentest/` `../ot-ics/`
-
-
-- [ ] Checklist？

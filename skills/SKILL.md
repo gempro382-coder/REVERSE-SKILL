@@ -5,9 +5,6 @@ description: Routes reverse engineering, exploitation, penetration testing, malw
 # Reverse Engineering Skills Master Control
 
 
-|------|------|---------|
-
-
 ```
 ## 建议下一步（选一个编号）
 
@@ -26,6 +23,3 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-root>\scripts\bootst
 
 
 >
-
-
-|------|------|--------|

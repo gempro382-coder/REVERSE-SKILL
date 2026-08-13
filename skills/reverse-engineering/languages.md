@@ -71,7 +71,6 @@ Decompiler fails with opcode errors.
 
 **Shortcut (Hack.lu CTF 2013):** If the challenge bundles its own modified Python interpreter (e.g., a custom `./py` binary), install `uncompyle2`/`uncompyle6` into that interpreter's environment and decompile using the challenge's own runtime. The modified interpreter understands its own opcode mapping, so standard decompilation tools work without manual opcode recovery.
 
-**Tool selection by Python version:** `uncompyle6` supports Python 2.x–3.8. For Python 3.9+ bytecode, use [`pycdc`](https://github.com/zrax/pycdc) (compile from source: `git clone && cmake . && make`).
 
 **Key insight:** Opcode remapping breaks all standard decompilers. The fastest fix is to find the modified `opcode.pyc` in the PyInstaller bundle, diff it against the stock Python opcodes, and patch the target `.pyc` back to standard opcodes before decompiling.
 
@@ -213,11 +212,9 @@ print(f"Flag: {flag}")
 - `-` operations: character value = `256 - minus_count`
 - Mixed `+`/`-`: net increment determines value
 - Cell reset (`[-]`) between characters: each segment is independent
-- Loop-based multiplication: `[->>+++<<]` multiplies by 3 — count the inner operations
 
 **Detection:** Large BF file with repeating pattern of `,` followed by many `+` or `-` characters, then a comparison structure (`[-]` or `[->+<]` patterns).
 
-**Key insight:** BF programs that check input are structurally simple — each input byte is compared against a constant built by incrementing a cell. Extract the increment counts to recover the expected input without running the program.
 
 **References:** BSidesSF 2026 "i-love-my-bf-part1"
 
@@ -271,7 +268,6 @@ for pos in range(50):  # max flag length
 print(bytes(flag).decode())
 ```
 
-**Key insight:** BF input validation programs are sequential — they read one character, check it, and only read the next if it matches. The character causing more reads is correct because the program advances past the validation gate to check the next position.
 
 **References:** BSidesSF 2026 "i-love-my-bf-part2"
 
@@ -306,9 +302,6 @@ def instrumented_bf_run(bf_code, dummy_input):
 **Key insight:** Compiled BF programs reuse fixed idioms for operations like equality comparison, conditional branching, and loops. Pattern-matching these idioms in the BF source or during execution lets you extract constants without fully understanding the program logic.
 
 **Common BF idioms:**
-- `[-]` — clear cell (set to 0)
-- `[->+<]` — move cell right
-- `<[-<->] +<[>-<[-]]>[-<+>]` — equality comparison of two cells
 
 **References:** BSidesSF 2026 "i-love-my-bf-part3"
 
@@ -351,7 +344,6 @@ Compile with `-O3` for constant folding.
 **Pattern (Coverup, Nullcon 2026):** PHP challenge provides XDebug code coverage data alongside encrypted output.
 
 **How it works:**
-- PHP code uses `xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE | XDEBUG_CC_BRANCH_CHECK)`
 - Encryption uses data-dependent branches: `if ($xored == chr(0)) ... if ($xored == chr(1)) ...`
 - Coverage JSON reveals which branches were executed during encryption
 - This leaks the set of XOR intermediate values that occurred
@@ -381,7 +373,6 @@ for pos in range(len(ciphertext)):
     # Combined with known plaintext prefix, this uniquely determines key
 ```
 
-**Key insight:** Code coverage is a powerful oracle — it tells you which conditional paths were taken. Any encryption with data-dependent branching leaks information through coverage.
 
 **Mitigation detection:** Look for branchless/constant-time crypto implementations that defeat this attack.
 
@@ -399,7 +390,6 @@ for pos in range(len(ciphertext)):
 - Heavy use of `seq[nat]`, `string`, `denotation` types
 
 **Reversing approach:**
-1. Pure functions are mathematically invertible — reverse each step in the pipeline
 2. Identify the transformation chain: `f_final(f_n(...f_2(f_1(input))...))`
 3. For each function, build the inverse
 
@@ -430,7 +420,6 @@ for total_offset_S in range(256):
 
 **Pattern (A New Machine):** Challenge targets specific Python version (e.g., 3.14.0 alpha).
 
-**Key requirement:** Compile that exact Python version to disassemble bytecode — alpha/beta versions have different opcodes than stable releases.
 
 ```bash
 # Build specific Python version

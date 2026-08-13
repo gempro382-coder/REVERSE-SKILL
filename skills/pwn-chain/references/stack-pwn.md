@@ -6,8 +6,6 @@ checksec --file=./vuln
 python -c "from pwn import *; print(ELF('./vuln'))"
 ```
 
-|---------|------|------|
-
 
 ```python
 # pwntools cyclic 模式
@@ -29,9 +27,6 @@ offset = cyclic_find(fault & 0xffffffff)  # 32-bit 模式
 # 64-bit 用 cyclic_find(p64(fault)[:8])
 log.info(f"offset = {offset}")
 ```
-
-
-|------|---------|------|------|
 
 
 ```python
@@ -220,9 +215,6 @@ ROPgadget --binary ./vuln --json > gadgets.json
 ropper --file ./vuln --search "pop rdi; ret"
 ropper --file ./libc.so.6 --search "syscall"
 ```
-
-
-|------|------|------|
 
 
 ```python

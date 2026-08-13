@@ -23,6 +23,5 @@
 
 ## Common Pitfalls
 
-- Stopping at “forced auth happened” without proving relay acceptance
 - Proving relay acceptance without showing what capability it produced
 - Mixing several candidate relay targets without isolating the one that actually accepted the relayed auth

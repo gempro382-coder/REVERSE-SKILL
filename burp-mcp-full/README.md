@@ -36,20 +36,6 @@ Burp Suite → Extensions → Add → Java → 选择 build/libs/burp-mcp-full.j
 ```
 
 
-|------|------|
-| Scope / Sitemap | `sitemap`, `target_info`, `get_scope`, `add_to_scope`, `remove_from_scope`, `add_issue` |
-| Collaborator | `collaborator_generate`, `collaborator_poll` |
-
-
-|------|------|
-
-
-|------|------|
-
-
-|------|------|
-
-
 ```json
 POST http://127.0.0.1:9876
 {"tool": "proxy_history", "params": {"limit": 10, "url_filter": "personalblog"}}
@@ -80,9 +66,6 @@ POST http://127.0.0.1:9876
 POST http://127.0.0.1:9876
 {"tool": "intercept_toggle", "params": {"enable": false}}
 ```
-
-
-|------|------|
 
 
 ```bash

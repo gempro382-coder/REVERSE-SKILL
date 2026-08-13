@@ -37,26 +37,7 @@
 ```
 
 
-- Windows：`skills/scripts/bootstrap-reverse.ps1`
-- Kali：`kali/scripts/bootstrap-reverse.sh`
-
-
-- `docs-generator/`、`diagram-generator/`
-
-
 ---
-
-
-|------|----------|------|
-
-
-|------|------|------|
-
-
-|------|------|------|
-
-
-|------|------|------|------|
 
 
 ---
@@ -122,14 +103,8 @@ bash kali/scripts/bootstrap-reverse.sh idapro --start-services
 ---
 
 
-|------|----------|
-| Android SDK | `~/Android/Sdk/` |
-| Node.js | `/usr/bin/node`（apt/nvm） |
-
 ---
 
-
-|------|-----------|---------|
 
 ---
 

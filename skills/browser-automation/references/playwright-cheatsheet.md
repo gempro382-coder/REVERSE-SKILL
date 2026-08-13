@@ -236,9 +236,6 @@ await Promise.all([
 ---
 
 
-|------|---------|---------|
-
-
 ```bash
 # 启动应用
 openreverse uia launch "C:\Tools\x64dbg\x64dbg.exe"
@@ -331,8 +328,6 @@ openreverse network stop
 ---
 
 
-|------|------|------|
-
 ---
 
 
@@ -368,6 +363,3 @@ npm run doctor:network
 ```
 
 ---
-
-
-|------|------|------|

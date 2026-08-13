@@ -3,12 +3,7 @@
 ---
 
 
-|------|------|------|
-
 ---
-
-
-|------|------|
 
 
 - https://github.com/swisskyrepo/PayloadsAllTheThings
@@ -17,14 +12,7 @@
 ---
 
 
-|------|------|
-
-
 ---
-
-
-|------|------|
-| one_gadget | libc one-shot |
 
 
 ```python
@@ -39,33 +27,13 @@ p = process('./vuln')
 ---
 
 
-|------|------|
-
-- AES（ECB/CBC padding oracle/bit flipping）
-
 ---
-
-
-|------|------|
 
 
 ---
 
 
-|------|------|
-
-
 ---
 
 
-|------|------|------|
-
 ---
-
-
-|------|------|
-| CTFTime Writeups | https://ctftime.org/writeups |
-| 0xdf hacks stuff | https://0xdf.gitlab.io/ |
-| LiveOverflow (YouTube) | https://www.youtube.com/c/LiveOverflow |
-| John Hammond (YouTube) | https://www.youtube.com/c/JohnHammond010 |
-| IppSec (HTB walkthrough) | https://www.youtube.com/c/ippsec |

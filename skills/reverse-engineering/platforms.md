@@ -45,11 +45,6 @@ otool -l binary | grep -A5 "segment\|section"
 
 **Key Mach-O concepts:**
 - Load commands drive the dynamic linker (`dyld`)
-- `LC_MAIN` → entry point (replaces `LC_UNIXTHREAD`)
-- `LC_LOAD_DYLIB` → shared library dependencies
-- `LC_CODE_SIGNATURE` → code signing blob
-- `__DATA_CONST.__got` → Global Offset Table
-- `__DATA.__la_symbol_ptr` → Lazy symbol pointers (like PLT)
 
 ### Code Signing & Entitlements
 
@@ -98,8 +93,6 @@ objc_msgSend(obj, "checkPassword:", input)
 ```
 
 **class-dump alternatives:**
-- `dsdump` — faster, supports Swift + Objective-C
-- `otool -oV binary` — dump Objective-C segments
 - Ghidra: Enable "Objective-C" analyzer in Analysis Options
 
 ### Swift Binary Reversing

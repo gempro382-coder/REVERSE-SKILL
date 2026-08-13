@@ -155,7 +155,4 @@ Interceptor.attach(_dyld_get_image_count, {
 ```
 
 
-|------|-------------|
-| SSL Pinning | Objection `ios sslpinning disable` / SSL Kill Switch 2 |
-
 Source: OWASP MSTG, frida-ios-dump, The iPhone Wiki

@@ -1,8 +1,5 @@
 
 
-|------|------|---------|------|
-
-
 ```javascript
 // 拦截 NSFileManager fileExistsAtPath 检测越狱目录
 var NSFileManager = ObjC.classes.NSFileManager;

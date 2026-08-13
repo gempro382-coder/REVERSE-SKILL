@@ -34,12 +34,6 @@ description: Use for blue-team threat hunting, detection engineering with Sigma/
 ```
 
 
-|------|------|
-
-
 - `references/hunting-loop.md`
 - `../malware-analysis/references/yara-sigma-rules.md`
 - `../digital-forensics/`
-
-
-- [ ] Checklist？

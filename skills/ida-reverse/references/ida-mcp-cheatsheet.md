@@ -20,8 +20,6 @@ powershell -File "scripts/open.ps1" -Path "C:\huge.sys" -NoAutoAnalysis
 ```
 
 
-|------|------|------|
-
 ---
 
 
@@ -413,6 +411,3 @@ idapro_py_eval(code="import ida_funcs; f=ida_funcs.get_func(0x401000); print(f.s
 ```
 
 ---
-
-
-|------|------|------|

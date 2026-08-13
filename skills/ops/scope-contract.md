@@ -69,6 +69,3 @@ RULES / MASTER-ROUTING / SKILL:
   3) auth 未 granted → STOP，只允许补授权材料
   4) ready_for_act = true → 打开 PRIMARY SKILL.md → ACT
 ```
-
-
-|------|------|------|

@@ -7,23 +7,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [1.0.1] — 2026-08-08
 
 ### Added
 
-- **Routing single source of truth** — `skills/config/routing.json` (R0–R39 keyword rules with `must` / `mustAll` / `exclude` semantics). `master-route.ps1` now reads this file; hardcoded routing tables removed from scripts. Routing knowledge lives in one place.
-- **Routing regression benchmark** — `skills/tests/routing-benchmark.json` (162 bilingual cases, 40 quick) + `skills/scripts/test-routing.ps1` runner. Any routing change must keep the benchmark green.
-- **Supply-chain pin gate** — `verify-routing-coherence.ps1` now fails on any auto-install capability lacking `pinnedVersion` / `pinnedCommit` / `pinPolicy` / asset hash. Pinned: frida-tools 14.10.4, pwntools 4.15.0, agent-browser 0.31.1, ida-pro-mcp @commit, SecLists/ProxyCat @commit, nuclei v3.9.0; winget sources annotated with `winget-latest` policy.
-- **Client-neutral integration contract** — routing, tests, manifests, and case workflows remain independent of Claude Code, Codex, Cursor, OpenCode, or any other client; client adapters are optional and must not define repository identity.
-- **Skill navigation index** — `skills/INDEX.md` auto-generated from SKILL.md frontmatter by `extract-summaries.ps1` (`-Check` mode for CI drift detection).
-- **CI pipeline** — `.github/workflows/ci.yml`: Windows + Ubuntu matrix (PowerShell shim for Linux) running test-routing / verify / smoke / INDEX check / JSON validation, plus `bash -n` syntax checks.
-- **Example case** — `examples/ctf-demo/` full workflow walkthrough (route → scope gate → timeline → evidence → report).
-- **frontmatter completion** — `dsl-vm-reverse/SKILL.md` gained name/description frontmatter (was the only module missing it).
-- **README refresh** — updated the multilingual project overview, release badge, current capabilities, and sponsor showcase layout.
 
 ### Fixed
 
-- **Upstream mixed-EOL files** — 3 markdown files committed with CRLF while `.gitattributes` declares `*.md eol=lf`; normalized to LF so `git status` stays clean on fresh clones.
 
 ### Security
 
@@ -60,15 +49,12 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ### Added
 
 - `case-review/`: read-only Evidence Graph Review with scope, timeline, work item, Finding, Path, and optional SHA-256 fixity checks
-- Domain skills R21–R27, R29–R30: `protocol-reverse`, `ghidra-reverse`, `cloud-k8s`, `windows-ad`, `digital-forensics`, `code-audit`, `threat-hunting`, `wifi-wireless`, `browser-extension-reverse`
-- High-quality skills R28, R31–R38: `ot-ics`, `macos-reverse`, `thick-client`, `go-rust-reverse`, `hardware-security`, `database-security`, `email-security`, `identity-federation`, `radio-sdr`
 - Wired into `MASTER-ROUTING.md`, `master-route.ps1`, routing tables, domain map, role-map, coherence tests
 
 ### Removed
 
 - `game-reverse/` (not a product focus; Unity/IL2CPP remains via `reverse-engineering` + seed-014)
 
-## [1.0.0] — 2026-07-18
 
 First **formal** public release of the reverse-skill skill-router pack.
 
@@ -76,22 +62,9 @@ First **formal** public release of the reverse-skill skill-router pack.
 
 #### Ops / combat contract layer (`skills/ops/`)
 
-- `IDENTITY.md` — product identity: lightweight skill router + bootstrap + field-journal (not a Z3r0-style platform)
-- `scope-contract.md` — case scope + `network_profile`; **auth not granted → no ACT on target**
-- `evidence-finding-path.md` — Evidence → Finding → Path chain
-- `role-map.md` — lead / specialist role mapping and handoff
-- `timeline-workitem.md` — timeline + workitem coverage
-- `sandbox-profile.md` — tool profile mapping
-- `skill-supply-chain.md` — Agent Skill / MCP install gate (AST10-lite)
 
 #### PRIMARY routing & case tooling (`skills/scripts/`)
 
-- `master-route.ps1` — PRIMARY route from task hint
-- `case-init.ps1` / `case-guard.ps1` — case bootstrap + scope guard
-- `append-evidence.ps1` — structured evidence append
-- `smoke.ps1` — package smoke checks
-- `verify-routing-coherence.ps1` — routing / ops coherence verification
-- `test-p0-friction.ps1` — P0 client-side lab friction regression tests
 
 #### Core skills & docs
 

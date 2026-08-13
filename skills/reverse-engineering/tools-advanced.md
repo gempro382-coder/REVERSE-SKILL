@@ -1,4 +1,3 @@
-﻿# CTF Reverse - Advanced Tools & Deobfuscation
 
 Advanced tooling for commercial packers/protectors, binary diffing, deobfuscation frameworks, emulation, and symbolic execution beyond angr.
 
@@ -213,9 +212,6 @@ python unflattener -i <input> -o <output> -t <func_addr> -a   # -a 自动多层
 ### ollvm-breaker (Binary Ninja)
 
 
-### deollvm — ARM64 Unicorn
-
-
 ### GOOMBA (Ghidra)
 
 ```text
@@ -341,15 +337,7 @@ while pc:
 ```
 
 **Triton vs angr:**
-| Feature | Triton | angr |
-|---|---|---|
-| Execution | Concrete + symbolic (DSE) | Fully symbolic |
-| Speed | Faster (concrete-driven) | Slower (explores all paths) |
-| Path explosion | Less prone (follows one path) | Major issue |
-| API | C++ / Python | Python |
-| Best for | Single-path deobfuscation, taint tracking | Multi-path exploration |
 
-**Key use:** Triton excels at deobfuscation — run the program concretely, but track symbolic state, then simplify the collected constraints.
 
 ---
 
@@ -732,7 +720,6 @@ class CmpLogger(gdb.Breakpoint):
 
 ## GDB Position-Encoded Input with Zero Flag Monitoring (EKOPARTY 2017)
 
-Send input where `input[i] = i` (position-encoded). Single-step through the binary monitoring the CPU zero flag (ZF). When ZF is set at a comparison involving a specific position's value, the comparison matched — log the expected value for that position.
 
 ```python
 import gdb
@@ -754,7 +741,6 @@ class ZFMonitor(gdb.Breakpoint):
 
 Maps each input byte to its required value in one pass without manual reversing.
 
-**Key insight:** Position-encoded input (`input[i]=i`) combined with zero flag monitoring reveals the full key/password in one pass — the zero flag fires when the expected value for position i equals i itself.
 
 **References:** EKOPARTY CTF 2017
 

@@ -3,13 +3,8 @@
 ---
 
 
-|--------|-------------|---------|
-
-
 ---
 
-
-- macOS、iOS、Mach-O、ObjC、Swift、Frida iOS
 
 ---
 
@@ -69,21 +64,12 @@ bash "<本包根目录>/kali/scripts/refresh-tool-index.sh"
 ---
 
 
-|------|------|------|------|---------|
-
-
-|------|------|------|---------|
-| jshookmcp | — | JS Hook/CDP/Network/AST | `npx -y @jshookmcp/jshook@0.3.4`（stdio） |
-
-
 ```bash
 bash kali/scripts/bootstrap-reverse.sh mcp-kali-server metasploitmcp hexstrike-ai pentestswarm
 ```
 
 ---
 
-
-|------|-------------|
 
 ---
 
@@ -131,9 +117,6 @@ bash kali/scripts/bootstrap-reverse.sh mcp-kali-server metasploitmcp hexstrike-a
 
 
 ---
-
-
-|------|---------|-------------|
 
 
 ```text

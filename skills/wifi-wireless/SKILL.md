@@ -15,11 +15,4 @@ description: Use for authorized wireless security assessment including Wi-Fi cap
 ```
 
 
-|------|------|
-| hcxdumptool / hcxtools | PMKID |
-
-
 - `references/wireless-lab-rules.md`
-
-
-- [ ] Checklist？

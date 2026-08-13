@@ -132,10 +132,6 @@ description: <一句话描述适用场景和触发条件>
 ```
 
 
-|------|---------|---------|
-| `github-release-jar-wrapper` | Java JAR + bat wrapper | `repo`, `assetRegex`, `installDir`, `wrapperName` |
-
-
 ```powershell
 [pscustomobject]@{
     Name = '<tool-name>'
@@ -175,12 +171,10 @@ if (-not $spec.Available) {
 ---
 
 
-**Windows**：
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File "<SKILL_ROOT>\skills\scripts\refresh-tool-index.ps1"
 ```
 
-**Kali Linux**：
 ```bash
 bash "<项目根目录>/kali/scripts/refresh-tool-index.sh"
 ```
@@ -248,9 +242,6 @@ skills/ghidra-headless/
 ```
 
 ---
-
-
-|------|------|------|--------------------------------------|
 
 
 ```json
@@ -385,11 +376,6 @@ MCP 配置示例：
 }
 \```
 ```
-
-
-|--------|-------------|
-| Claude Code | `~/.claude/mcp.json` |
-| Cursor | Cursor Settings → MCP |
 
 
 ```json

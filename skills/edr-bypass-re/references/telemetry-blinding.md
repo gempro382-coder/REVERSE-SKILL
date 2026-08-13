@@ -1,11 +1,5 @@
 
 
-|--------------|------|--------|
-
-
-|-----|-----|------|
-
-
 ```text
 应用代码 EventWrite(...)
   → 微软封装 (TraceLogging API)
@@ -167,14 +161,6 @@ $ref = 'C:\Windows\System32\notepad.exe'
 ```
 
 
-|----------|------|
-| 8 | CreateRemoteThread |
-| 10 | ProcessAccess（OpenProcess） |
-| 11 | FileCreate |
-| 22 | DNS Query |
-| 25 | ProcessTampering（image hollowing） |
-
-
 ```c
 STARTUPINFOEX si = {0};
 PROCESS_INFORMATION pi = {0};
@@ -214,12 +200,3 @@ CreateProcessW(L"C:\\Windows\\System32\\notepad.exe", NULL, NULL, NULL, FALSE,
 ❌ 先 dump LSASS → AMSI / ETW 都还没压 → 高置信 T1003.001 告警
 ✅ AMSI → ETW → unhook → spoof → payload
 ```
-
-
-- ETW Threat Intelligence Provider：<https://learn.microsoft.com/en-us/windows/win32/etw/event-tracing-portal>
-- PPID Spoofing：<https://blog.didierstevens.com/2017/03/20/>
-- Ekko sleep mask：<https://github.com/Cracked5pider/Ekko>
-- Foliage sleep obfuscation：<https://github.com/SecIdiot/FOLIAGE>
-- MITRE T1562.002 (Disable Windows Event Logging)：<https://attack.mitre.org/techniques/T1562/002/>
-- MITRE T1562.006 (Indicator Blocking)：<https://attack.mitre.org/techniques/T1562/006/>
-- MITRE T1070 (Indicator Removal)：<https://attack.mitre.org/techniques/T1070/>

@@ -173,11 +173,6 @@ Java.perform(function() {
 ```
 
 
-|------|---------|
-| React Native | Hook `OkHttpClientProvider` |
-| WebView | Hook `WebViewClient.onReceivedSslError` |
-
-
 ```javascript
 // Flutter SSL Pinning 绕过（需要找到 ssl_verify_peer_cert 函数）
 var flutter_lib = Module.findBaseAddress("libflutter.so");
@@ -193,10 +188,6 @@ Memory.scan(flutter_lib, Module.findModuleByName("libflutter.so").size, pattern,
 ```
 
 ---
-
-
-|---------|---------|
-| SafetyNet/Play Integrity | Magisk Hide / Zygisk + Shamiko |
 
 
 ```javascript
@@ -226,9 +217,6 @@ Java.perform(function() {
 ```
 
 ---
-
-
-|------|---------|---------|
 
 
 ```text
@@ -293,9 +281,4 @@ Java.perform(function() {
 ---
 
 
-|------|------|------|
-
 ---
-
-
-|------|------|------|

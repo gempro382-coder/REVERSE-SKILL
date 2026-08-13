@@ -1,11 +1,6 @@
 ---
 name: edr-bypass-re
-description: |
-  Tartarus Gate、ETW patch、AMSI patch、call stack spoofing、hardware breakpoint Blindside、MITRE T1562、
 ---
-
-
-|------|--------|
 
 
 ```text
@@ -44,11 +39,6 @@ fltmc filters
 ```powershell
 pe-sieve64.exe /pid 1234 /shellc 3 /modules 3 /dir hooks_dump
 ```
-
-
-|--------|---------|
-| ETW-TI provider | EtwEventWrite head patch |
-| Sysmon ProcessCreate | PPID spoof + unbacked memory |
 
 
 ```powershell
@@ -92,12 +82,6 @@ sysmon64.exe -i sysmonconfig.xml
 ```
 
 
-|------|------|-----------|
-
-
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File "&lt;SKILL_ROOT&gt;\skills\scripts\bootstrap-reverse.ps1" -Capability @('pe-sieve','syswhispers3','sysmon') -StartServices
 ```
-
-
-- MITRE ATT&CK T1562：<https://attack.mitre.org/techniques/T1562/>

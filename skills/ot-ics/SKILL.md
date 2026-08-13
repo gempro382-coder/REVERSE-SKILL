@@ -42,11 +42,5 @@ MUST NOT 在未明确允许时：
 ```
 
 
-|------|------|------|
-
-
 - `references/ot-safe-assessment.md`
 - `../firmware-pentest/` `../protocol-reverse/` `../network` via pentest-tools
-
-
-- [ ] Checklist / journal？

@@ -214,7 +214,6 @@ dmtc2  rN, 0x0105   ; ...next quadword
 ```
 
 **Approach:**
-1. Disassemble in IDA/Ghidra — `dmtc2`/`dmfc2` with selector in 0x100-0x40FF range indicates OCTEON CP2
 2. Cross-reference the Cavium OCTEON Hardware Reference Manual for register semantics
 3. Trace the key loading sequence to recover the AES or HMAC key material
 
@@ -226,7 +225,6 @@ dmtc2  rN, 0x0105   ; ...next quadword
 
 ## EFM32 ARM Microcontroller MMIO AES (SEC-T CTF 2017)
 
-Silicon Labs EFM32 Cortex-M binary — a flat binary loaded at 0x1000 in Thumb mode.
 
 **IDA setup:**
 ```text
@@ -258,7 +256,6 @@ cipher = AES.new(key, AES.MODE_ECB)
 plaintext = cipher.decrypt(ciphertext)
 ```
 
-**Key insight:** Hardware AES accelerators on microcontrollers appear as MMIO register writes at a specific base address — cross-reference the vendor reference manual (EFM32 Reference Manual for Silicon Labs peripherals).
 
 **References:** SEC-T CTF 2017
 
@@ -297,7 +294,6 @@ open('disk_patched.img', 'wb').write(data)
 "
 ```
 
-**Key insight:** QEMU's `-s` flag exposes a GDB stub on port 1234 for full debugging of MBR/bootloader code — workflow identical to userland debugging.
 
 **References:** Square CTF 2017
 

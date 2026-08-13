@@ -2,7 +2,6 @@
 
 ## Table of Contents
 - [Hidden Emulator Opcodes + LD_PRELOAD Key Extraction (0xFun 2026)](#hidden-emulator-opcodes--ld_preload-key-extraction-0xfun-2026)
-- [Spectre-RSB SPN Cipher — Static Parameter Extraction (0xFun 2026)](#spectre-rsb-spn-cipher--static-parameter-extraction-0xfun-2026)
 - [Image XOR Mask Recovery via Smoothness (VuwCTF 2025)](#image-xor-mask-recovery-via-smoothness-vuwctf-2025)
 - [Shellcode in Data Section via mmap RWX (VuwCTF 2025)](#shellcode-in-data-section-via-mmap-rwx-vuwctf-2025)
 - [Recursive execve Subtraction (VuwCTF 2025)](#recursive-execve-subtraction-vuwctf-2025)
@@ -21,7 +20,6 @@
 
 ## Hidden Emulator Opcodes + LD_PRELOAD Key Extraction (0xFun 2026)
 
-**Pattern (CHIP-8):** Non-standard opcode `FxFF` triggers hidden `superChipRendrer()` → AES-256-CBC decryption. Key derived from binary constants.
 
 **Technique:**
 1. Check all instruction dispatch branches for non-standard opcodes
@@ -49,12 +47,10 @@ LD_PRELOAD=./hook.so ./emulator rom.ch8
 
 ---
 
-## Spectre-RSB SPN Cipher — Static Parameter Extraction (0xFun 2026)
 
 **Pattern:** Binary uses cache side channels to implement S-boxes, but ALL cipher parameters (round keys, S-box tables, permutation) are in the binary's data section.
 
 **Key insight:** Don't try to run on special hardware. Extract parameters statically:
-- 8 S-boxes × 8 output bits, 256 entries each
 - Values `0x340` = bit 1, `0x100` = bit 0
 - 64-byte permutation table, 8 round keys
 
@@ -96,13 +92,11 @@ for region in regions:
     best_mask = max(range(256), key=lambda m: score_smoothness(region, m, positions))
 ```
 
-**Search space:** 256 candidates × N regions = trivial. Smoothness is a reliable scoring metric for natural images.
 
 ---
 
 ## Shellcode in Data Section via mmap RWX (VuwCTF 2025)
 
-**Pattern (Missing Function):** Binary relocates data to RWX memory (mmap with PROT_READ|PROT_WRITE|PROT_EXEC) and jumps to it.
 
 **Detection:** Look for `mmap` with PROT_EXEC flag. Embedded shellcode often uses XOR with rotating key.
 
@@ -124,7 +118,6 @@ for region in regions:
 
 **Attack:** For each position, try all 256 byte values, compare output byte with target ciphertext. One match per byte = full plaintext recovery without knowing the key.
 
-**Detection:** Change one input byte → only corresponding output byte changes. This means zero cross-byte diffusion = trivially breakable.
 
 ---
 
@@ -135,7 +128,6 @@ for region in regions:
 **Recognition:**
 - Input file with coordinate pairs (x, y)
 - Binary iterates a mathematical function (e.g., z^3 - 1 = 0) and outputs pass/fail
-- Grid dimensions hinted by point count (e.g., 2600 = 130×20)
 - 5-pixel-high ASCII art font common in CTFs
 
 **Newton's method for z^3 - 1:**
@@ -173,7 +165,6 @@ for r in range(len(bits) // WIDTH):
 
 ## Windows PE XOR Bitmap Extraction + OCR (srdnlenCTF 2026)
 
-**Pattern (Artistic Warmup):** Binary renders input text, compares rendered bitmap against expected pixel data stored XOR'd with constant in `.rdata`. No need to compute — extract expected pixels directly.
 
 **Attack:**
 1. Reverse the core check function to identify rendering and comparison logic
@@ -214,9 +205,7 @@ print(result.stdout)
 
 ## Two-Stage Loader: RC4 Gate + VM Constraints (srdnlenCTF 2026)
 
-**Pattern (Cornflake v3.5):** Two-stage malware loader — stage 1 uses RC4 username gate, stage 2 downloaded from C2 contains VM-based password validation.
 
-**Stage 1 — RC4 username recovery:**
 ```python
 def rc4(key, data):
     s = list(range(256))
@@ -237,7 +226,6 @@ def rc4(key, data):
 username = rc4(b"s3cr3t_k3y_v1", bytes.fromhex("46f5289437bc009c17817e997ae82bfbd065545d"))
 ```
 
-**Stage 2 — VM constraint extraction:**
 1. Download stage 2 from C2 endpoint (e.g., `/updates/check.php`)
 2. Reverse VM bytecode interpreter (typically 15-20 opcodes)
 3. Extract linear equality constraints over flag characters
@@ -252,14 +240,6 @@ username = rc4(b"s3cr3t_k3y_v1", bytes.fromhex("46f5289437bc009c17817e997ae82bfb
 **Pattern (Explorer):** Rust kernel module implements a 3D maze via `/dev/challenge` ioctls. Navigate the maze, avoid decoy exits (status=2), find the real exit (status=1), read the flag.
 
 **Ioctl enumeration:**
-| Command | Description |
-|---------|-------------|
-| `0x80046481-83` | Get maze dimensions (3 axes, 8-16 each) |
-| `0x80046485` | Get status: 0=playing, 1=WIN, 2=decoy |
-| `0x80046486` | Get wall bitfield (6 directions) |
-| `0x80406487` | Get flag (64 bytes, only when status=1) |
-| `0x40046488` | Move in direction (0-5) |
-| `0x6489` | Reset position |
 
 **DFS solver with decoy avoidance:**
 ```c
@@ -299,7 +279,6 @@ void dfs(int fd, int x, int y, int z) {
 
 ## Multi-Threaded VM with Channel Synchronization (DiceCTF 2026)
 
-**Pattern (locked-in):** Custom stack-based VM runs 16 concurrent threads verifying a 30-char flag. Threads communicate via futex-based channels. Pipeline: input → XOR scramble → transformation → base-4 state machine → final check.
 
 **Analysis approach:**
 1. **Identify thread roles** by tracing channel read/write patterns in GDB
@@ -334,7 +313,6 @@ def solve_flag(scramble_vals, lookup_table, initial_state, target_state):
     # Trace back from target_state to recover flag
 ```
 
-**Key insight:** Multi-threaded VMs require tracing data flow across thread boundaries. Channel-based communication creates a pipeline — identify each thread's role (input, transform, validate, output) by watching which channels it reads/writes. Constants that affect computation may come from unexpected sources (futex return values, thread IDs).
 
 ---
 
@@ -366,7 +344,6 @@ gdb /lib/libc/libc.so.6
 # and swap the expected password at runtime
 ```
 
-**Key insight:** When a binary behaves differently under GDB vs. normal execution, check `ldd` for non-standard library paths. Suid binaries drop privileges under debuggers, so a backdoored libc can detect this via `getuid`/`geteuid` syscalls and change program behavior accordingly. The `strings | diff` approach quickly reveals injected data without full disassembly.
 
 ---
 
@@ -377,9 +354,7 @@ gdb /lib/libc/libc.so.6
 **Pattern (Private Binary):** A custom Linux kernel module (`.ko`) registers a `binfmt` handler for non-standard binary formats. When a file with a specific magic number is executed, the kernel module intercepts it, decrypts the contents in memory, and jumps to the entry point.
 
 **Reverse engineering approach:**
-1. **Analyze the `.ko`:** Look for `register_binfmt()` call — it registers a `struct linux_binfmt` with a `load_binary` callback
 2. **Find the magic number:** The `load_binary` function checks the file's first bytes against a specific magic number to identify its format
-3. **Extract the encryption key:** Look for `movabs` instructions loading 8-byte constants — these are often RC4 key bytes
 4. **Identify the encryption scheme:** Common choices are RC4, XOR, or AES-ECB. RC4 is identifiable by the S-box initialization loop (256-byte array, swap pattern)
 5. **Decrypt the flat binary:** Apply the recovered key to the encrypted file contents, skipping any header
 
@@ -416,7 +391,6 @@ decrypted = cipher.decrypt(encrypted)
 
 ## Hash-Resolved Imports / No-Import Ransomware (BSidesSF 2026)
 
-**Pattern (Ran Somewhere):** Malware binary has zero visible imports — all API calls are resolved at runtime by hashing symbol names and comparing against pre-computed hash values. The binary uses `dlopen` + a custom hash table to find libc and libcrypto functions.
 
 **Identification:**
 - `readelf -d` shows no dynamic symbols or very few (just `dlopen`/`dlsym`)
@@ -424,7 +398,6 @@ decrypted = cipher.decrypt(encrypted)
 - Disassembly shows hash computation loops followed by indirect calls
 - RC4-encrypted embedded strings (RSA public key, file paths, passphrases)
 
-**Analysis shortcut — LD_PRELOAD key extraction:**
 
 Rather than reversing the full hash resolution and key derivation, hook the crypto functions that the malware ultimately calls:
 
@@ -462,7 +435,6 @@ docker run --rm -v $(pwd):/work -w /work ubuntu:22.04 \
 **Hash resolution patterns:**
 - **SipHash variant:** Two 64-bit seeds, iterative mixing with symbol name bytes
 - **DJB2/FNV variants:** Simpler hash functions with recognizable constants (`5381`, `0xcbf29ce484222325`)
-- **ROR13-based:** Windows malware favorite: `hash = (hash >> 13) | (hash << 19); hash += c`
 
 **Decryption after key capture:**
 ```python
@@ -480,7 +452,6 @@ pt = pt[:-pt[-1]]
 print(pt.decode())
 ```
 
-**Key insight:** When a binary resolves all imports via hashing, don't waste time reversing the hash function and building a rainbow table. Instead, let the malware resolve everything itself by running it in a sandboxed environment with `LD_PRELOAD` hooks on the functions you care about (OpenSSL crypto functions, file I/O, network calls). The AES key is deterministic across runs — if it works once, it works always.
 
 **Safety:** Always run suspected ransomware in a Docker container or VM. Mount only copies of the encrypted files, never originals.
 
@@ -511,7 +482,6 @@ if idx >= 0:
     print(decrypted.decode(errors='ignore'))
 ```
 
-**Key insight:** ELF execution requires **program headers** (PT_LOAD segments), NOT section headers. Section headers are metadata for debuggers and analysis tools — they're optional at runtime. Corrupting `e_shoff`, `e_shnum`, or `e_shstrndx` in the ELF header breaks tools but not execution. When tools fail, parse the binary manually or patch the ELF header to zero out section header references before loading in a disassembler.
 
 **Recovery approach:**
 ```bash

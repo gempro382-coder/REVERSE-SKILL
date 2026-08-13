@@ -25,21 +25,6 @@ Do not over-ask for clarification. If the request is underspecified, make reason
 
 Use Mermaid unless another language is clearly better.
 
-| User wants | Prefer | Why |
-|---|---|---|
-| process flow, decision tree, simple swimlane | Mermaid flowchart | readable and easy to paste into Markdown |
-| sequence of system/user interactions | Mermaid sequenceDiagram or PlantUML sequence | Mermaid for docs; PlantUML for UML formality |
-| lifecycle, state machine, transitions | Mermaid stateDiagram-v2 or PlantUML state | compact transition syntax |
-| database schema, entities, relationships | Mermaid erDiagram | portable ER notation |
-| class/interface/object model | Mermaid classDiagram or PlantUML class | Mermaid for docs; PlantUML for detailed UML |
-| project schedule | Mermaid gantt | concise timeline syntax |
-| hierarchy, ideas, notes | Mermaid mindmap | good default for idea maps |
-| customer/product journey | Mermaid journey | built-in journey notation |
-| git history | Mermaid gitGraph | built-in git notation |
-| dependency graph, package graph, large network | Graphviz DOT | better layout engines for dense graphs |
-| architecture with layers, clusters, boundaries | Mermaid flowchart with subgraphs, Graphviz clusters, or PlantUML C4-style | choose based on requested fidelity |
-| weighted flow/sankey-like relationship | Mermaid sankey-beta when supported, otherwise SVG or Graphviz | Mermaid support may vary by renderer |
-| custom visual where source languages fit poorly | SVG | precise control over layout and styling |
 
 ## Output policy
 
@@ -142,9 +127,6 @@ Rendered file: [link] [only if generated]
 For English user requests, respond in English. For Chinese user requests, respond in Chinese unless they ask otherwise.
 
 ---
-
-
-|------|-----------|---------|------|
 
 
 ---

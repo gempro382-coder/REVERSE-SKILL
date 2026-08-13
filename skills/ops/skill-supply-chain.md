@@ -1,8 +1,5 @@
 
 
-|--------|------|----------|
-
-
 ```text
 □ 来源：官方 org / 已审计列表（如 ToB curated）/ 用户自有
 □ 阅读全部 SKILL.md + scripts/* + package 依赖
@@ -11,9 +8,6 @@
 □ 不复制进 monorepo 除非走 CONTRIBUTING 与脱敏
 □ 更新 skills/references/community-security-skills.md 记录来源日期
 ```
-
-
-|------|------|------|
 
 
 ```powershell

@@ -198,11 +198,6 @@ flowchart TD
 ```
 
 
-|------|--------------|-----------|--------|
-| Windows | `RULES.md` | `skills/scripts/*.ps1` | winget / GitHub Release ZIP |
-| Kali Linux | `kali/RULES-kali.md` | `kali/scripts/*.sh` | apt / pip / npm / GitHub tar.gz |
-
-
 ```mermaid
 sequenceDiagram
     participant U as 用户

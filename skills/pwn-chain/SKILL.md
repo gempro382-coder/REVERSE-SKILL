@@ -1,10 +1,6 @@
 ---
 name: pwn-chain
-description: |
 ---
-
-
-|------|--------|
 
 
 ```text
@@ -76,9 +72,6 @@ Step 6: 远程稳定化
 5. ROP 链：prepare_kernel_cred(0) → commit_creds → swapgs+iretq → 用户态 execve("/bin/sh")
 6. 或更省事：覆盖 modprobe_path 为 "/tmp/x"，写一个 /tmp/x，然后触发 modprobe
 ```
-
-
-|------|------|---------|
 
 
 ```bash

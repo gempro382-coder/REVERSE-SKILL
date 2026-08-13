@@ -1,10 +1,6 @@
 ---
 name: browser-automation
-description: |
 ---
-
-
-|------|--------|
 
 
 ---
@@ -57,12 +53,6 @@ agent-browser wait --load networkidle
 ---
 
 
-|------|---------|------|
-
-
-|------|---------|
-
-
 ```bash
 # 1. Clone 项目
 git clone https://github.com/zhexulong/openreverse.git
@@ -82,9 +72,6 @@ npm run doctor:cua-runtime
 npm run install:mitmproxy
 npm run doctor:network
 ```
-
-
-|------|------|
 
 
 ```text
@@ -108,9 +95,6 @@ npm run doctor:network
 ```
 
 ---
-
-
-|------|-----------|---------|------|
 
 
 ```markdown

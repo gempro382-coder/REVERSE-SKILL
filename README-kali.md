@@ -14,6 +14,3 @@ cd /path/to/reverse-skill
 bash kali/scripts/refresh-tool-index.sh
 # 详细 bootstrap / MCP 见 kali/README-kali.md
 ```
-
-
-|------|------|

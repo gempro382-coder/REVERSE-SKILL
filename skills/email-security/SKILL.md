@@ -15,10 +15,4 @@ description: Use for authorized email security review including phishing analysi
 ```
 
 
-|------|------|
-
-
 - `references/email-auth-checklist.md`
-
-
-- [ ] Checklist？
