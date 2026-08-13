@@ -278,4 +278,3 @@ Thanks to all open-source tool authors. This project integrates tools across rev
 Special thanks to the OLLVM deobfuscation ecosystem contributors and everyone who submitted test samples, issues, and PRs.
 
 <p align="right">(<a href="#acknowledgments">back to top</a>)</p>
-
