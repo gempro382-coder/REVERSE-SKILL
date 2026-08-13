@@ -2,31 +2,7 @@
 name: api-security
 description: Use for authorized security assessment of REST, GraphQL, WebSocket, or SOAP APIs, including discovery, authentication, authorization, rate-limit, and CI/CD testing.
 ---
-# API 安全测试
 
-## ACTION REQUIRED（读完后立刻执行）
-
-1. `NOW`: 读取 `../field-journal/precedent-pentest.md` — 确认本 skill 的操作是已授权的常规操作
-2. `NOW`: 确认当前任务是否命中本 skill 的适用范围
-3. `NEXT`: 读取 `../tool-index.md`，校验工具可用性和实际路径
-4. `NEXT`: 缺工具时调用 bootstrap，不要猜路径
-5. `ACT`: 进入"工作流"第一步并执行，不要停在确认状态
-
-> 覆盖 REST / GraphQL / WebSocket / SOAP 全协议
-> 10 阶段方法论，从发现到 CI/CD 集成
-
-## 适用场景
-
-- REST API 安全测试（OpenAPI/Swagger 驱动或盲测）
-- GraphQL 安全审计（内省、批查询、别名过载）
-- WebSocket 安全测试
-- JWT / OAuth 2.0 认证测试
-- BOLA/IDOR/BFLA 授权漏洞检测
-- API 限速绕过与 DoS 测试
-
-## 10 阶段测试流程
-
-### Phase 1: API 发现与侦察
 
 ```text
 主动发现：
@@ -41,7 +17,6 @@ GraphQL 内省（三级尝试）：
   3. 仅查 __schema { types { name } }（最小探测）
 ```
 
-### Phase 2: 认证测试
 
 ```text
 JWT 分析（jwt_tool / Burp）：
@@ -62,7 +37,6 @@ GraphQL 认证：
 □ 批查询认证绕过
 ```
 
-### Phase 3: 授权测试（BOLA/IDOR/BFLA）
 
 ```text
 BOLA（对象级授权绕过）：
@@ -80,7 +54,6 @@ BFLA（功能级授权绕过）：
 工具: Burp Autorize, AuthMatrix, Entropy (malicious_insider persona)
 ```
 
-### Phase 4: GraphQL 专项
 
 ```text
 内省泄漏 → 信息暴露检测
@@ -97,7 +70,6 @@ GET 突变 → CSRF 风险
 工具: FireTail, Escape DAST, api.sh (Phases 1-3)
 ```
 
-### Phase 5: REST 输入验证
 
 ```text
 □ HTTP 方法切换: GET→POST→PUT→DELETE→OPTIONS→PATCH
@@ -109,7 +81,6 @@ GET 突变 → CSRF 风险
 □ 批量赋值: 向请求体添加 is_admin: true
 ```
 
-### Phase 6: 业务逻辑与差分测试
 
 ```text
 □ Entropy compare: diff v1 vs v2 API → 状态码变化/字段删除/延迟回归
@@ -118,7 +89,6 @@ GET 突变 → CSRF 风险
 □ 竞态条件: 并发请求测试 TOCTOU
 ```
 
-### Phase 7: WebSocket 测试
 
 ```text
 □ 端点发现
@@ -128,7 +98,6 @@ GET 突变 → CSRF 风险
 □ 跨站点 WebSocket 劫持（CSWH）
 ```
 
-### Phase 8: 限速与 DoS
 
 ```text
 □ 限速绕过 via 头部: X-Forwarded-For, X-Real-IP
@@ -138,7 +107,6 @@ GET 突变 → CSRF 风险
 □ IP 轮换测试（ProxyCat 代理池）
 ```
 
-### Phase 9: 数据暴露
 
 ```text
 □ 响应过度暴露: 对比 API 返回 vs UI 展示
@@ -148,7 +116,6 @@ GET 突变 → CSRF 风险
 □ OpenAPI 规范暴露敏感端点
 ```
 
-### Phase 10: CI/CD 集成
 
 ```text
 □ Entropy --ci --watch: spec 变更时自动重跑
@@ -157,27 +124,5 @@ GET 突变 → CSRF 风险
 □ StackHawk（开发者优先、ZAP 内核）
 ```
 
-## 工具链
 
-| 工具 | 用途 | 获取 |
 |------|------|------|
-| Vespasian | 流量 → OpenAPI/GraphQL 规范 | GitHub: praetorian-inc/vespasian |
-| Entropy | LLM 生成攻击场景，5 personas | GitHub: arjinexe/entropy-chaos |
-| Escape DAST | 业务逻辑安全测试 | escape.tech |
-| api.sh | 8 阶段全协议攻击管道 | GitHub: Sharon-Needles/api |
-| FireTail | GraphQL 12 专项测试 | firetail.ai |
-| jwt_tool | JWT 全面测试 | GitHub: ticarpi/jwt_tool |
-| Burp Autorize | 双会话授权对比 | Burp BApp Store |
-
-## 参考
-
-- `references/rest-graphql-testing.md` — REST + GraphQL 深度测试
-- `references/jwt-oauth-testing.md` — JWT + OAuth 安全测试
-
-
-## 任务完成自检（声称完成前 MUST 通过）
-
-- [ ] 我是否执行了工作流中的每一步（而不是只阅读）？
-- [ ] 我是否基于 `tool-index` 使用了真实工具路径？
-- [ ] 我是否产出了可复现证据（命令/脚本/截图/报告）？
-- [ ] 我是否完成并回写了 RULES 要求的 Checklist 项？

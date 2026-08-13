@@ -1,8 +1,4 @@
-# .NET 逆向通用工作流
 
-完整工作流细节、IL patch 可靠性、字符串解密器提取、状态机识别、dnlib 脚本化。
-
-## 完整工作流（端到端）
 
 ```text
 1. Identify  → 确认是 .NET 托管程序（不是 native）
@@ -13,22 +9,9 @@
 6. Patch     → IL 编辑器修改，Save Module
 ```
 
-每一步的产物要落盘：原样本 `target.exe` → 脱壳 `target-clean.exe` → patch 后 `target-patched.exe`。
 
-## IL patch vs C# patch 可靠性
-
-**核心结论：关键修改用 IL 编辑器，不要用 C# 编辑器。**
-
-| 维度 | C# 编辑器 (Edit Method C#) | IL 编辑器 (Edit IL) |
 |------|---------------------------|---------------------|
-| 编译失败风险 | 高（缺引用、语法、lambda 重写失败）| 几乎为零 |
-| 信息保真 | 编译器重新生成 IL，可能与原 IL 不同 | 原样替换，逐指令改 |
-| 适用 | 改个字符串、改个常量、简单逻辑 | 改判断、删校验、改控制流 |
-| async/await/状态机 | 经常编译失败或扭曲 | 直接改状态机字段，可靠 |
 
-dnSpyEx 的 C# 反编译器是基于只读反编译 + 尝试重编译，对编译器生成的代码（状态机、闭包、`yield`）重编译极易失败。IL 编辑器是逐指令编辑，所见即所得。
-
-### 典型 IL patch 模式
 
 ```text
 改判断（if (check) → 永远 true）：
@@ -54,9 +37,6 @@ dnSpyEx 的 C# 反编译器是基于只读反编译 + 尝试重编译，对编�
   ldarg / ldc 指令直接改操作数
 ```
 
-## 状态机识别（async/await / yield）
-
-C# 的 `async/await` 和 `IEnumerator` yield 编译成**状态机**：编译器生成一个嵌套类，`MoveNext()` 里用 `state` 字段做 switch dispatch。dnSpyEx C# 视图会还原成 async，但反编译可能失真，IL 视图看 `MoveNext` 最准。
 
 ```text
 async/await 的 MoveNext 结构：
@@ -69,9 +49,6 @@ async/await 的 MoveNext 结构：
 C# 编辑器改 async 几乎必失败 → 必须用 IL。
 ```
 
-## 字符串解密器提取
-
-详见 `obfuscators.md`。这里补充 dnlib 脚本化批量解字符串：
 
 ```csharp
 // dnlib 脚本：扫描所有字符串解密器调用，运行时还原后写回
@@ -104,20 +81,6 @@ var opts = new ModuleWriterOptions(module);
 module.Write("target-decrypted.exe", opts);
 ```
 
-dnlib 是 .NET 元数据编程的事实标准，de4dot 内部就是用它。写自定义脱混淆脚本时首选。
-
-## 动态调试要点
-
-dnSpyEx 调试器对 .NET 程序比 native 友好得多：
-
-- **断点在方法入口**：右键方法 → Add Breakpoint
-- **看对象值**：断住后 Locals / Watch 窗口直接看对象字段、字符串内容
-- **内存写入**：可以直接改运行时变量值（Edit Value）
-- **异常断点**：Debug → Exceptions，勾选要断的异常类型 —— 混淆器常用异常驱动控制流，断异常能看到真实路径
-
-### 异常驱动控制流
-
-部分混淆器把正常逻辑塞进 `try`，用 `throw` + `catch` 做跳转。静态看 IL 像异常处理，实际是控制流：
 
 ```text
 try { throw new CustomException(0x42); }
@@ -129,11 +92,6 @@ catch (CustomException e) {
 }
 ```
 
-下异常断点（断 `CustomException`），跟踪 `Code` 值流转，比硬啃 IL 快。
-
-## 模块初始化器（Module .cctor）
-
-`.NET` 模块的静态构造函数（`<module>` 的 `.cctor`）在 assembly 加载时最先执行，混淆器常把 anti-tamper / 解密初始化放这里。分析顺序：
 
 ```text
 1. 先看 <module>.cctor（Module .cctor）—— 解密/反调试初始化
@@ -141,9 +99,6 @@ catch (CustomException e) {
 3. anti-tamper 在 .cctor 里 → 先 patch .cctor 再脱壳
 ```
 
-## 提取配置 / C2 / Key 的通用模式
-
-红队工具和 loader 常把配置加密嵌在资源或字段里，运行时解密：
 
 ```text
 定位流程：
@@ -152,20 +107,3 @@ catch (CustomException e) {
 3. 动态断在解密方法的返回点，dump 解密后的明文
 4. 常见：AES-256-CBC with Key==IV（Codegate 2013 模式，见 reverse-engineering/tools.md .NET 段）
 ```
-
-参考 `references/sharp-tools.md` 里红队工具的具体配置结构。
-
-## 与 reverse-engineering 的边界
-
-- **IL2CPP / NativeAOT** → 编译成 native，没有 CLR 元数据 → 走 `reverse-engineering/`（IDA/r2），本 skill 仅做识别
-- **托管 .NET**（标准 C# exe/dll、Mono/Unity 托管层、Xamarin）→ 本 skill
-- **混合（native loader + .NET payload）** → loader 部分走 `reverse-engineering/`，dump 出 .NET payload 后切本 skill
-
-## 落盘产物清单
-
-每次 .NET 逆向任务建议产出：
-- `target-original.exe`（原样本，不动）
-- `target-clean.exe`（de4dot 脱壳后）
-- `notes.md`（识别的混淆器、解密器 token、关键方法地址、配置/C2/key）
-- `target-patched.exe`（patch 后，如需要）
-- `il-diff.txt`（patch 前后 IL 对照，如做 patch）

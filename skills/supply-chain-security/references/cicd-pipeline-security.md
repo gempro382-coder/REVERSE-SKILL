@@ -1,6 +1,4 @@
-# CI/CD 管道安全审计
 
-## 管道攻击面
 
 ```text
 威胁模型（STRIDE）:
@@ -12,9 +10,6 @@
 □ 权限提升: Runner 逃逸/密钥窃取
 ```
 
-## 审计清单
-
-### 1. Pipeline as Code 配置
 
 ```yaml
 # GitHub Actions 审计要点
@@ -42,7 +37,6 @@ permissions:
   contents: read
 ```
 
-### 2. 密钥管理
 
 ```bash
 # 扫描历史提交中的密钥
@@ -58,7 +52,6 @@ gh secret list
 # ✅ Secrets 仅在需要时暴露到特定步骤
 ```
 
-### 3. 构建完整性
 
 ```bash
 # 构建溯源
@@ -72,7 +65,6 @@ cosign sign-blob --key cosign.key artifact.tar.gz
 cosign verify-blob --key cosign.pub --signature artifact.tar.gz.sig artifact.tar.gz
 ```
 
-### 4. Runner 安全
 
 ```text
 □ 是否使用 GitHub-hosted runner？（推荐，每次全新环境）
@@ -82,7 +74,6 @@ cosign verify-blob --key cosign.pub --signature artifact.tar.gz.sig artifact.tar
 □ 构建缓存是否可能跨构建泄漏？
 ```
 
-### 5. 依赖拉取安全
 
 ```text
 □ npm: package-lock.json 是否提交？ 禁止 --force / --legacy-peer-deps
@@ -92,7 +83,6 @@ cosign verify-blob --key cosign.pub --signature artifact.tar.gz.sig artifact.tar
 □ 私有包: 注册表认证是否用短期 token？
 ```
 
-## 自动化检查 Pipeline
 
 ```yaml
 # .github/workflows/supply-chain.yml

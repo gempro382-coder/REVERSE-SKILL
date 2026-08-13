@@ -1,6 +1,5 @@
 # Symbol Migration Prompt Template
 
-## 标准比对 Prompt（直接复制使用）
 
 ```text
 I have disassembly outputs and procedure code of the same function.
@@ -66,17 +65,9 @@ found_struct_offset:
 If nothing found, output an empty YAML. DO NOT output anything other than the desired YAML. DO NOT collect unrelated symbols.
 ```
 
-## 变量填充说明
 
-| 变量 | 来源 | 获取方式 |
 |------|------|---------|
-| `{disasm_for_reference}` | 旧版 IDA | `idapro_disasm(addr="函数名")` |
-| `{procedure_for_reference}` | 旧版 IDA | `idapro_decompile(addr="函数名")` |
-| `{disasm_code}` | 新版 IDA | `idapro_disasm(addr="对应地址")` |
-| `{procedure}` | 新版 IDA | `idapro_decompile(addr="对应地址")` |
-| `{symbol_name_list}` | 旧版提取 | 从 reference 代码中提取所有非 sub_/loc_ 的符号名 |
 
-## 批量调用脚本骨架（Python）
 
 ```python
 import yaml
@@ -153,7 +144,6 @@ def apply_results(results, ida_session):
     return {"renames": renames, "comments": comments}
 ```
 
-## API 配置建议
 
 ```yaml
 # 默认用 DeepSeek（便宜）

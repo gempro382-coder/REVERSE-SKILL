@@ -1,4 +1,3 @@
-# MCP 任务编排模板
 
 ```md
 ## Observe

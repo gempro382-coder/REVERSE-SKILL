@@ -1,6 +1,4 @@
-# iOS 逆向工程专项
 
-## IPA 获取与解密
 
 ```bash
 # 从 App Store 下载
@@ -24,7 +22,6 @@ Clutch -d 1  # 解密第 1 个
 DYLD_INSERT_LIBRARIES=dumpdecrypted.dylib /path/to/App
 ```
 
-## Mach-O 分析
 
 ```bash
 # 基本信息
@@ -47,7 +44,6 @@ class-dump -H TargetBinary -o headers/
 # 导出 ObjC 类及方法声明到 headers/ 目录
 ```
 
-## Objective-C 运行时分析
 
 ```text
 消息传递机制：
@@ -85,7 +81,6 @@ var str = NSString.stringWithString_("test");
 console.log(str.UTF8String());
 ```
 
-## Swift 逆向
 
 ```text
 Swift 名称修饰（Name Mangling）：
@@ -102,7 +97,6 @@ $s10ModuleName5ClassC6method3argSi_tF
 工具: swift-demangle, Hopper (自动还原)
 ```
 
-## 越狱检测绕过
 
 ```text
 检测方法分类：
@@ -132,7 +126,6 @@ $s10ModuleName5ClassC6method3argSi_tF
    → Hook sysctl → 清空 p_flag P_TRACED 位
 ```
 
-### Frida 统一绕过脚本
 
 ```javascript
 // 文件检测绕过
@@ -161,17 +154,8 @@ Interceptor.attach(_dyld_get_image_count, {
 });
 ```
 
-## 关键防护绕过清单
 
-| 防护 | iOS 绕过方法 |
 |------|-------------|
-| App Store 加密 | frida-ios-dump / Clutch |
 | SSL Pinning | Objection `ios sslpinning disable` / SSL Kill Switch 2 |
-| 越狱检测 | Objection `ios jailbreak disable` / 自定义 Frida Hook |
-| 反调试 (PT_DENY_ATTACH) | Frida 启动后注入 / debugserver |
-| 完整性校验 | Hook MAC 检查 / 代码签名验证 |
-| 反注入 | 修改 Mach-O 去除 __RESTRICT 段 |
-| Swift 混淆 | swift-demangle + LLM 辅助语义恢复 |
-| 屏幕截图防护 | Hook UIScreen.mainScreen.snapshotViewAfterScreenUpdates |
 
 Source: OWASP MSTG, frida-ios-dump, The iPhone Wiki

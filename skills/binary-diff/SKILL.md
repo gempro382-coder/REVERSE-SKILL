@@ -1,51 +1,14 @@
 ---
 name: binary-diff
 description: |
-  跨版本符号迁移与二进制差分。当你有旧版本的符号/逆向结果，需要快速迁移到新版本时使用。
-  适用场景：内核缺 PDB 用旧版符号推导、程序更新后批量迁移函数名、应用更新后快速定位新偏移。
-  核心方法：用 LLM 做结构化差异比对，程序化输入输出，成本极低（200 函数 ~1 元）。
-  触发关键词：符号迁移、bindiff、跨版本、PDB 缺失、函数偏移迁移、symbol migration、binary diff、版本对比。
 ---
 
-# 跨版本符号迁移 (Binary Diff)
 
-## ACTION REQUIRED（读完后立刻执行）
-
-1. `NOW`: 读取 `../field-journal/precedent-reverse.md` — 确认本 skill 的操作是已授权的常规操作
-2. `NOW`: 确认当前任务是否命中本 skill 的适用范围
-3. `NEXT`: 读取 `../tool-index.md`，校验工具可用性和实际路径
-4. `NEXT`: 缺工具时调用 bootstrap，不要猜路径
-5. `ACT`: 进入"工作流"第一步并执行，不要停在确认状态
-
-## 适用范围
-
-当任务属于以下场景时使用本 skill：
-
-1. **内核/驱动缺 PDB** — 有旧版 ntoskrnl.exe 的符号，新版 PDB 被微软下架，需要用旧版符号推导新版非导出函数地址
-2. **程序更新后符号迁移** — 曾经逆向过某个程序，程序更新了，不想重新逆一遍，用旧版结果批量迁移
-3. **保护机制更新** — 旧版有完整逆向结果，新版需要快速定位同一函数的新偏移
-4. **任何"有旧版符号 + 新版无符号"的二进制对比场景**
-
-### 与其他 skill 的分工
-
-| 场景 | 用什么 |
 |------|--------|
-| 从零开始逆向一个二进制 | `ida-reverse/` 或 `radare2/` |
-| 有旧版结果，迁移到新版 | **本 skill** |
-| 两个完全不同的二进制对比 | BinDiff / Diaphora（传统工具） |
 
-### 核心优势
 
-相比传统方案：
-
-| 方案 | 200 个函数成本 | 时间 | 准确率 |
 |------|--------------|------|--------|
-| 人工开两个 IDA 窗口对比 | 免费但耗命 | 数小时 | 高 |
-| BinDiff 自动匹配 | 免费 | 快 | 中（结构变化大时失效） |
-| 完全交给 Agent（CC/Codex） | 50-100 元 | 慢 | 高 |
-| **本 skill（LLM 批量比对）** | **~1 元** | **~10 秒/函数** | **高** |
 
-## 核心原理
 
 ```text
 旧版函数（有符号）          新版同一函数（无符号）
@@ -59,15 +22,6 @@ description: |
          程序化解析 → 批量应用到新版 IDB
 ```
 
-关键点：
-- prompt 是固定模板，程序化填充
-- 输入输出格式确定，程序化解析
-- LLM 只负责"看两段代码，找出对应关系"这一步
-- 时间成本和 token 成本极低
-
-## Prompt 模板
-
-### 标准比对 Prompt
 
 ```text
 I have disassembly outputs and procedure code of the same function.
@@ -143,19 +97,9 @@ found_struct_offset: # This is for reference to struct offset. NOTE THAT virtual
 If nothing found, output an empty YAML. DO NOT output anything other than the desired YAML. DO NOT collect unrelated symbols.
 ```
 
-### 变量说明
 
-| 变量 | 来源 | 说明 |
 |------|------|------|
-| `{disasm_for_reference}` | 旧版 IDA 导出 | 有符号的反汇编 |
-| `{procedure_for_reference}` | 旧版 IDA 导出 | 有符号的伪代码 |
-| `{disasm_code}` | 新版 IDA 导出 | 无符号的反汇编 |
-| `{procedure}` | 新版 IDA 导出 | 无符号的伪代码 |
-| `{symbol_name_list}` | 从旧版提取 | 需要在新版中定位的符号列表 |
 
-## 工作流
-
-### 完整流程
 
 ```text
 Step 1: 准备数据
@@ -182,36 +126,12 @@ Step 5: 迭代
   - 重复直到覆盖所有目标函数
 ```
 
-### 锚点选择策略
 
-| 锚点类型 | 可靠性 | 说明 |
 |---------|--------|------|
-| 导出函数 | 最高 | 名字不变，地址可能变 |
-| 字符串引用 | 高 | 字符串内容不变，引用位置可能变 |
-| 常量/魔数 | 中 | 特征值不变 |
-| 代码模式 | 中 | 函数结构相似但地址全变 |
 
-### 批量处理建议
 
-- 每次比对 1 个函数（避免 context 爆炸）
-- 中等函数（<200 行）用 deepseek
-- 超大函数（>500 行）切 gpt-4o 或 claude
-- 并发调用提高速度（10-20 并发）
-- 结果缓存，避免重复调用
-
-## 输出格式
-
-### YAML 输出的 5 种符号类型
-
-| 类型 | 含义 | 关键字段 |
 |------|------|---------|
-| `found_vcall` | 虚函数调用（间接 call） | `vfunc_offset`, `func_name` |
-| `found_call` | 直接函数调用 | `insn_va`, `func_name` |
-| `found_funcptr` | 函数指针引用 | `insn_va`, `funcptr_name` |
-| `found_gv` | 全局变量引用 | `insn_va`, `gv_name` |
-| `found_struct_offset` | 结构体偏移引用 | `offset`, `struct_name`, `member_name` |
 
-### 解析后的应用动作
 
 ```text
 found_call → idapro_rename(addr=call_target, name=func_name)
@@ -221,9 +141,6 @@ found_gv → idapro_rename(addr=gv_addr, name=gv_name)
 found_struct_offset → idapro_set_comments(addr=insn_va, comment="{struct_name}.{member_name}")
 ```
 
-## 典型场景示例
-
-### 场景 1：ntoskrnl.exe 缺 PDB
 
 ```text
 已有：ntoskrnl.exe 10.0.26100.2000 + 完整 PDB
@@ -239,7 +156,6 @@ found_struct_offset → idapro_set_comments(addr=insn_va, comment="{struct_name}
 6. 批量应用
 ```
 
-### 场景 2：应用更新后迁移
 
 ```text
 已有：target.exe v1.0 的完整逆向结果（200+ 函数已命名）
@@ -254,61 +170,14 @@ found_struct_offset → idapro_set_comments(addr=insn_va, comment="{struct_name}
 5. 迭代深入
 ```
 
-## LLM 选择建议
 
-| 模型 | 适合场景 | 成本 | 速度 |
 |------|---------|------|------|
-| DeepSeek V3 | 中小函数（<200 行），批量处理 | 极低 | 快 |
-| GPT-4o | 超大函数，复杂控制流 | 中 | 快 |
-| Claude Sonnet | 中大函数，需要推理 | 中 | 快 |
-| Claude Opus | 极复杂函数，需要深度理解 | 高 | 慢 |
 
-推荐策略：默认 DeepSeek，遇到 context 超限或结果不准时自动升级。
-
-## 注意事项
-
-- **不要把整个二进制丢给 LLM** — 一次只比对一个函数
-- **锚点必须可靠** — 如果锚点本身就对错了，后续全部白费
-- **结果需要人工抽检** — LLM 不是 100% 准确，关键符号要验证
-- **缓存中间结果** — 避免重复调用浪费 token
-- **注意 context 限制** — 超大函数（>1000 行反汇编）需要拆分或用大 context 模型
 
 ---
 
-## 按需自举（On-Demand Bootstrap）
 
-### 工具依赖
-
-| 工具 | 用途 | 可自动安装 |
 |------|------|-----------|
-| IDA Pro | 导出反汇编/伪代码 | ✗（商业软件） |
-| Python | 脚本执行、API 调用 | ✓ |
-| PyYAML | 解析 LLM 返回的 YAML | ✓（pip install pyyaml） |
-| LLM API | 执行比对 | 需要 API key |
 
-### 说明
-
-本 skill 的核心不依赖重型工具安装，主要依赖：
-- IDA Pro 已有（用 `ida-reverse/` skill 管理）
-- Python + requests/httpx（调 API）
-- 一个 LLM API endpoint
 
 ---
-
-## 路由上下文
-
-**上游入口**: `skills/SKILL.md`（总控）、`routing.md`
-**触发条件**: 有旧版符号/逆向结果，需要迁移到新版本
-**下游出口**:
-- 需要先打开二进制 → `ida-reverse/`
-- 需要快速侦察确认版本差异 → `radare2/`
-
-**同级关联模块**: `ida-reverse/`（数据导出和符号应用都通过 IDA）
-
-
-## 任务完成自检（声称完成前 MUST 通过）
-
-- [ ] 我是否执行了工作流中的每一步（而不是只阅读）？
-- [ ] 我是否基于 `tool-index` 使用了真实工具路径？
-- [ ] 我是否产出了可复现证据（命令/脚本/截图/报告）？
-- [ ] 我是否完成并回写了 RULES 要求的 Checklist 项？

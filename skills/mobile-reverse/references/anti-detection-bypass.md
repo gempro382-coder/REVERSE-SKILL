@@ -1,6 +1,4 @@
-# Root / 越狱 / 反调试 / SSL Pinning 绕过
 
-## 检测层次模型
 
 ```
 Layer 1: 静态检测（安装时/启动时）
@@ -21,18 +19,9 @@ Layer 3: 环境检测（按需触发）
   └─ syscall 直接检测（绕过 libc）
 ```
 
-## Android Root 检测绕过
 
-### 常见检测库及绕过
-
-| 检测库 | 检测方法 | 绕过方式 |
 |--------|---------|---------|
-| RootBeer | 8 种检测组合 | Hook 每个检测方法返回 false |
-| SafetyNet | Google Play Services 远程认证 | 使用 Magisk Hide / Shamiko / Play Integrity Fix |
-| Google Play Integrity | 替换 SafetyNet | Trickystore + PIF |
-| 自定义 native 检测 | syscall 读取 /proc/self/status | Hook syscall 或修改 /proc 挂载 |
 
-### Frida 综合绕过
 
 ```javascript
 Java.perform(function() {
@@ -62,9 +51,6 @@ Java.perform(function() {
 });
 ```
 
-## iOS 越狱检测绕过
-
-### 多层 Frida Hook
 
 ```javascript
 // 1. 文件系统检测
@@ -93,7 +79,6 @@ Interceptor.attach(MISValidateSignature, {
 });
 ```
 
-## 反调试绕过
 
 ### Android
 
@@ -144,9 +129,6 @@ Interceptor.attach(sysctl, {
 // 调试时 getppid() != 1
 ```
 
-## SSL Pinning 绕过
-
-### Android 五层绕过
 
 ```text
 层 1 — TrustManager: 接受所有证书
@@ -156,7 +138,6 @@ Interceptor.attach(sysctl, {
 层 5 — Native SSL (OpenSSL/BoringSSL): Hook SSL_get_verify_result → X509_V_OK
 ```
 
-### iOS 四层绕过
 
 ```text
 层 1 — NSURLSession: Hook SecTrustEvaluate → kSecTrustResultProceed
@@ -165,7 +146,6 @@ Interceptor.attach(sysctl, {
 层 4 — libcurl: LD_PRELOAD 替换 SSL 验证回调
 ```
 
-### 通用 Objection 命令
 
 ```bash
 # Android

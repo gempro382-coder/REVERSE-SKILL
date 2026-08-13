@@ -1,21 +1,10 @@
-# 内核驱动逆向参考
 
-> 覆盖 Windows/Linux 内核驱动逆向、Rootkit 分析、C/C++ 二进制模式识别。
 
 ---
 
-## Windows 驱动逆向
 
-### 驱动类型
-
-| 类型 | 特征 | 分析重点 |
 |------|------|---------|
-| WDM (Windows Driver Model) | 老式驱动，手动管理 IRP | DriverEntry → 设备创建 → Dispatch 例程 |
-| KMDF (Kernel Mode Driver Framework) | 现代框架，事件驱动 | EvtDriverDeviceAdd → Queue → I/O 回调 |
-| WDF (Windows Driver Foundation) | KMDF + UMDF 统称 | 看 WdfDriverCreate 调用 |
-| Minifilter | 文件系统过滤驱动 | FltRegisterFilter → Pre/Post 回调 |
 
-### WDM 驱动分析流程
 
 ```text
 1. 找 DriverEntry（入口点）
@@ -40,7 +29,6 @@
    - 未检查 IOCTL 权限 → 非特权用户可调用
 ```
 
-### IOCTL 编码解析
 
 ```python
 # 解析 IOCTL code
@@ -60,25 +48,12 @@ decode_ioctl(0x80002034)
 # DevType=0x8000 Func=0x80D Method=BUFFERED Access=ANY
 ```
 
-### IDA 插件
 
-| 插件 | 用途 | 链接 |
 |------|------|------|
-| **Driver Buddy Reloaded** | 自动识别 IOCTL、Dispatch、设备名 | https://github.com/VoidSec/DriverBuddyReloaded |
-| **WinDbg + IDA** | 内核调试 + 静态分析配合 | 内置 |
-| **FLIRT/Lumina** | 识别 WDK 库函数 | IDA 内置 |
 
-### 参考文章
-
-- [Windows Drivers RE Methodology (VoidSec)](https://voidsec.com/windows-drivers-reverse-engineering-methodology/) — 最完整的 WDM 驱动逆向方法论
-- [Driver Reversing 101](https://eversinc33.com/posts/driver-reversing.html) — WDM vs KMDF 对比
-- [Methodology of Reversing Vulnerable Killer Drivers](https://whiteknightlabs.com/2025/10/28/methodology-of-reversing-vulnerable-killer-drivers/) — 漏洞驱动分析
 
 ---
 
-## Linux 内核模块逆向
-
-### LKM (Loadable Kernel Module) 结构
 
 ```text
 关键函数：
@@ -91,7 +66,6 @@ decode_ioctl(0x80002034)
 - struct block_device_operations → 块设备操作
 ```
 
-### 分析流程
 
 ```text
 1. 确认是内核模块
@@ -116,62 +90,20 @@ decode_ioctl(0x80002034)
    - 修改 VFS 层 → 隐藏文件
 ```
 
-### Rootkit 常见技术
 
-| 技术 | 特征 | 检测方法 |
 |------|------|---------|
-| syscall table hook | 修改 `sys_call_table` 条目 | 对比内存中的表与磁盘上的 vmlinux |
-| VFS hook | 修改 `file_operations` 函数指针 | 检查 fops 指针是否指向内核代码段外 |
-| Netfilter hook | `nf_register_net_hook` | 遍历 netfilter hook 链表 |
-| kprobe/ftrace hook | 注册 kprobe 或 ftrace 回调 | 检查 ftrace 注册列表 |
-| eBPF rootkit | 加载恶意 BPF 程序 | `bpftool prog list` |
-| DKOM | 直接修改内核对象（进程链表） | 遍历 task_struct 链表对比 /proc |
 
-### 工具
 
-| 工具 | 用途 |
 |------|------|
-| `crash` | 内核 dump 分析 |
-| `volatility3` | 内存取证（Linux profile） |
-| `dmesg` / `journalctl` | 内核日志 |
-| `lsmod` / `/proc/modules` | 已加载模块列表 |
-| `modinfo` | 模块元信息 |
-| `strace` | 系统调用跟踪（用户态视角） |
 
 ---
 
-## C/C++ 逆向模式识别
 
-### C 语言常见模式
-
-| 源码模式 | 反汇编特征 |
 |---------|-----------|
-| `if-else` | `cmp` + `jcc`（条件跳转） |
-| `switch-case` | 跳转表（`jmp [rax*8 + table]`）或连续 `cmp` |
-| `for` 循环 | `cmp` + `jl/jle` + 循环体 + `inc/add` + `jmp` 回跳 |
-| `while` 循环 | 条件判断在循环顶部 |
-| `do-while` | 条件判断在循环底部 |
-| 函数指针调用 | `call rax` 或 `call [reg+offset]` |
-| `struct` 访问 | `[reg+固定偏移]`（如 `[rdi+0x10]`） |
-| `malloc` + 使用 | `call malloc` → 返回值存入寄存器 → 后续用该寄存器+偏移访问 |
-| 字符串比较 | `call strcmp` 或 `repe cmpsb` |
 
-### C++ 特有模式
 
-| 源码模式 | 反汇编特征 |
 |---------|-----------|
-| **虚函数调用** | `mov rax, [rcx]`（取 vtable）→ `call [rax+offset]`（调用虚函数） |
-| **构造函数** | 分配内存 → 写入 vtable 指针 → 初始化成员 |
-| **析构函数** | 清理成员 → 可能调用 `operator delete` |
-| **this 指针** | 第一个参数（rcx/rdi）是对象指针 |
-| **继承** | vtable 中包含父类虚函数 + 子类覆盖 |
-| **多重继承** | 对象内有多个 vtable 指针（偏移不同） |
-| **RTTI** | vtable 前面有 `type_info` 指针 |
-| **异常处理** | `__cxa_throw` / `_CxxThrowException` |
-| **STL 容器** | `std::vector`: `{begin, end, capacity}` 三指针结构 |
-| **std::string** | 小字符串优化（SSO）：短串内联，长串堆分配 |
 
-### vtable 逆向方法
 
 ```text
 1. 找 vtable
@@ -191,7 +123,6 @@ decode_ioctl(0x80002034)
    - 对 `call [rax+offset]` 添加注释标明调用的虚函数
 ```
 
-### 结构体恢复
 
 ```text
 方法 1：从访问模式推断
@@ -211,30 +142,15 @@ decode_ioctl(0x80002034)
 
 ---
 
-## 常见编译器特征
 
-| 编译器 | 识别特征 |
 |--------|---------|
-| MSVC | `_security_cookie` 检查、`__fastcall` 调用约定、Rich Header |
 | GCC | `__stack_chk_fail`、`-fstack-protector`、`.note.GNU-stack` |
-| Clang/LLVM | 类似 GCC 但优化模式不同、`__asan_*`（如果开了 sanitizer） |
-| MinGW | GCC 特征 + Windows API 调用 |
-| AOSP Clang | Android 特有的 `__android_log_print`、PGO 标记 |
 
-### 优化级别识别
 
-| 优化级别 | 特征 |
 |---------|------|
-| -O0 | 大量冗余 mov、每个变量都在栈上、函数不内联 |
-| -O1 | 基本优化、部分变量在寄存器 |
-| -O2 | 循环展开、函数内联、尾调用优化 |
-| -O3 / -Os | 激进内联、向量化（SIMD）、代码难读 |
-| PGO | 热路径优化、冷代码分离到 `.text.cold` |
-| LTO | 跨模块内联、全局死代码消除 |
 
 ---
 
-## 内核调试环境
 
 ### Windows
 
@@ -275,14 +191,5 @@ lx-dmesg             # 内核日志
 
 ---
 
-## 参考资源
 
-| 资源 | 说明 | 链接 |
 |------|------|------|
-| VoidSec 驱动逆向方法论 | Windows WDM 驱动完整分析流程 | https://voidsec.com/windows-drivers-reverse-engineering-methodology/ |
-| Elastic Rootkit 系列 | Linux Rootkit 分类+检测 | https://security-labs.elastic.co/security-labs/linux-rootkits-1-hooked-on-linux |
-| Driver Buddy Reloaded | IDA 驱动分析插件 | https://github.com/VoidSec/DriverBuddyReloaded |
-| LOLDrivers | 已知漏洞驱动列表 | https://www.loldrivers.io/ |
-| Windows Driver Samples | 微软官方驱动示例 | https://github.com/microsoft/Windows-driver-samples |
-| Linux Kernel Module Programming | 内核模块开发教程 | https://sysprog21.github.io/lkmpg/ |
-| Trail of Bits - Devirtualizing C++ | vtable 逆向方法 | https://blog.trailofbits.com/2017/02/13/devirtualizing-c-with-binary-ninja/ |

@@ -1,9 +1,5 @@
 # Timeline + WorkItem / Coverage
 
-> 可回放作战记录（Z3r0 timeline 思想）+ 覆盖勾选（WorkItem 思想）。  
-> 全部落在 **`work/<case>/`**（仓库 gitignore），不进 skill 包正文。
-
-## 目录约定
 
 ```text
 work/<case>/
@@ -15,15 +11,11 @@ work/<case>/
   report/            # 最终报告草稿或拷贝
 ```
 
-初始化：
 
 ```powershell
 powershell -File skills\scripts\case-init.ps1 -Hint "full pentest" -CaseName "acme-2026"
 ```
 
-## timeline.md 格式
-
-每条记录 **只追加**：
 
 ```markdown
 ## {ISO-8601} | {role} | {phase}
@@ -35,9 +27,6 @@ powershell -File skills\scripts\case-init.ps1 -Hint "full pentest" -CaseName "ac
 - next:
 ```
 
-**MUST NOT** 删除或改写已有 `##` 时间块（更正用新条目 + `corrects: {timestamp}`）。
-
-## workitems.md 模板
 
 ```markdown
 # Work Items
@@ -59,16 +48,6 @@ status: pending | in_progress | blocked | done | cancelled
 - [ ] field-journal written (anonymized)
 ```
 
-## attack-chain / pentest 挂钩
 
 | Skill | MUST |
 |-------|------|
-| `attack-chain/` | 多阶段任务创建 case 目录；每阶段结束更新 workitems + timeline |
-| `pentest-tools/` | 每次工具跑批后至少 1 条 timeline；发现 → Evidence 草稿 |
-| 其它 RE skill | 建议 timeline；至少在出报告前补齐 Evidence 链 |
-
-## 特色
-
-- Agent 友好的纯文本，diff/review 友好  
-- 与 tool-index 命令路径可交叉引用  
-- 不依赖 WebSocket 直播；需要时把 timeline 贴进报告即可  

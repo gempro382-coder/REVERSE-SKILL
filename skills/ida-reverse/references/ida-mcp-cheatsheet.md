@@ -1,13 +1,7 @@
-# IDA Pro MCP 工具速查
 
-> 72 个 MCP 工具按功能分类，附常用参数和典型用法。
-> 服务器名：`idapro`，工具前缀：`idapro_*`，HTTP 模式运行。
 
 ---
 
-## 启动与会话管理
-
-### 服务器启动
 
 ```powershell
 # 启动 MCP HTTP 服务器（后台静默）
@@ -25,44 +19,16 @@ powershell -File "scripts/open.ps1" -Path "C:\big.exe" -TimeoutSeconds 600
 powershell -File "scripts/open.ps1" -Path "C:\huge.sys" -NoAutoAnalysis
 ```
 
-### 会话工具
 
-| 工具 | 用途 | 示例 |
 |------|------|------|
-| `idapro_idalib_list()` | 列出所有 session | — |
-| `idapro_idalib_current()` | 当前绑定的 session | — |
-| `idapro_idalib_switch(session_id)` | 切换 session | 多文件对比时 |
-| `idapro_idalib_close(session_id)` | 关闭 session | 释放资源 |
-| `idapro_idalib_save(path)` | 保存数据库 | 保存分析进度 |
-| `idapro_idalib_health(session_id)` | 检查 worker 状态 | 排查卡死 |
-| `idapro_server_health()` | 服务器健康检查 | — |
-| `idapro_server_warmup()` | 预热子系统 | 首次使用前 |
 
 ---
 
-## 第一步：全局概览
-
-### survey_binary — 快速概况
 
 ```
 idapro_survey_binary(detail_level="minimal")
 ```
 
-返回：
-- 架构（x86/x64/ARM/MIPS）
-- 入口点
-- 函数总数
-- 字符串统计
-- 段信息
-- 导入分类（加密/网络/文件IO/注册表）
-- 高 xref 热门函数
-
-**detail_level 选项**：
-- `"minimal"` — 快速概况（推荐首选）
-- `"standard"` — 包含更多细节
-- `"full"` — 完整信息
-
-### 函数列表
 
 ```
 # 列出所有函数（分页）
@@ -73,7 +39,6 @@ idapro_list_funcs(queries=[{"filter": "crypt", "offset": 0, "limit": 20}])
 idapro_list_funcs(queries=[{"filter": "main", "offset": 0, "limit": 10}])
 ```
 
-### 统一查询
 
 ```
 # 查询导入函数
@@ -88,9 +53,6 @@ idapro_entity_query(kind="names", filter="")
 
 ---
 
-## 反编译与反汇编
-
-### 反编译（伪代码）
 
 ```
 # 按函数名
@@ -101,7 +63,6 @@ idapro_decompile(addr="sub_140001000")
 idapro_decompile(addr="0x140001000")
 ```
 
-### 反汇编
 
 ```
 # 默认指令数
@@ -111,7 +72,6 @@ idapro_disasm(addr="main")
 idapro_disasm(addr="0x401000", max_instructions=100)
 ```
 
-### 综合分析（推荐）
 
 ```
 # 一次性获取：伪代码 + 字符串 + 常量 + 调用者 + 被调用者 + 基本块
@@ -121,7 +81,6 @@ idapro_analyze_function(addr="main", include_asm=false)
 idapro_analyze_function(addr="sub_401000", include_asm=true)
 ```
 
-### 函数概要
 
 ```
 # 批量获取函数指标（大小、块数、xref 数）
@@ -130,9 +89,6 @@ idapro_func_profile(queries=["main", "sub_401000", "sub_402000"])
 
 ---
 
-## 交叉引用与调用图
-
-### 谁引用了目标
 
 ```
 # 查看谁调用了某函数
@@ -145,7 +101,6 @@ idapro_xrefs_to(addrs=["0x404000"])
 idapro_xrefs_to(addrs=["CreateFileW", "ReadFile", "WriteFile"])
 ```
 
-### 高级 xref 查询
 
 ```
 # 指定方向和类型
@@ -153,13 +108,11 @@ idapro_xref_query(addr="0x401000", direction="to")    # 谁引用我
 idapro_xref_query(addr="0x401000", direction="from")  # 我引用谁
 ```
 
-### 被调用函数列表
 
 ```
 idapro_callees(addrs=["main"])
 ```
 
-### 调用图
 
 ```
 # 从 main 开始，深度 3
@@ -169,7 +122,6 @@ idapro_callgraph(roots=["main"], max_depth=3)
 idapro_callgraph(roots=["sub_401000", "sub_402000"], max_depth=2)
 ```
 
-### 数据流追踪
 
 ```
 # 向后追踪：这个值从哪来
@@ -181,9 +133,6 @@ idapro_trace_data_flow(addr="0x401050", direction="forward", max_depth=5)
 
 ---
 
-## 搜索
-
-### 字符串搜索（正则）
 
 ```
 # 搜索 URL
@@ -199,7 +148,6 @@ idapro_find_regex(pattern="error|fail|invalid", limit=30)
 idapro_find_regex(pattern="key|password|secret|token", limit=20)
 ```
 
-### 反汇编文本搜索
 
 ```
 # 在反汇编列表中搜索
@@ -207,7 +155,6 @@ idapro_search_text(pattern="call    sub_")
 idapro_search_text(pattern="xor     eax, eax")
 ```
 
-### 字节模式搜索
 
 ```
 # 精确字节
@@ -220,7 +167,6 @@ idapro_find_bytes(patterns=["48 89 ?? 24 ??"], limit=10)
 idapro_find_bytes(patterns=["CC CC CC CC", "90 90 90 90"], limit=5)
 ```
 
-### 高级搜索
 
 ```
 # 搜索立即数
@@ -232,39 +178,31 @@ idapro_find(type="string", targets=["password"])
 
 ---
 
-## 内存与数据读取
-
-### 读原始字节
 
 ```
 idapro_get_bytes(addrs=[{"addr": "0x401000", "size": 64}])
 ```
 
-### 读字符串
 
 ```
 idapro_get_string(addrs=["0x404000", "0x404100"])
 ```
 
-### 读整数
 
 ```
 idapro_get_int(queries=[{"addr": "0x405000", "size": 4}])
 ```
 
-### 读全局变量
 
 ```
 idapro_get_global_value(queries=["g_flag", "g_key_size"])
 ```
 
-### 读结构体
 
 ```
 idapro_read_struct(queries=[{"addr": "0x405000", "type": "HEADER"}])
 ```
 
-### 搜索结构体
 
 ```
 idapro_search_structs(filter="FILE")
@@ -272,9 +210,6 @@ idapro_search_structs(filter="FILE")
 
 ---
 
-## 修改操作
-
-### 添加注释
 
 ```
 # 单个注释
@@ -291,7 +226,6 @@ idapro_set_comments(items=[
 idapro_append_comments(items=[{"addr": "0x401000", "comment": "补充：密钥长度 16"}])
 ```
 
-### 重命名
 
 ```
 # 重命名函数
@@ -311,7 +245,6 @@ idapro_rename(batch={"local": [
 ]})
 ```
 
-### Patch 汇编
 
 ```
 # NOP 掉检测代码
@@ -327,7 +260,6 @@ idapro_patch_asm(items=[
 ])
 ```
 
-### Patch 字节
 
 ```
 # 直接写字节
@@ -336,9 +268,6 @@ idapro_patch(patches=[{"addr": "0x401050", "bytes": "9090909090"}])
 
 ---
 
-## 类型系统
-
-### 声明结构体
 
 ```
 idapro_declare_type(decls=[{
@@ -347,7 +276,6 @@ idapro_declare_type(decls=[{
 }])
 ```
 
-### 应用类型
 
 ```
 # 给函数设置原型
@@ -363,13 +291,11 @@ idapro_set_type(edits=[{
 }])
 ```
 
-### 推断类型
 
 ```
 idapro_infer_types(addrs=["sub_401000", "sub_402000"])
 ```
 
-### 查询/查看类型
 
 ```
 idapro_type_query(queries=["Packet"])
@@ -378,7 +304,6 @@ idapro_type_inspect(queries=["PacketHeader"])
 
 ---
 
-## 栈帧分析
 
 ```
 # 查看函数栈帧
@@ -395,7 +320,6 @@ idapro_declare_stack(items=[{
 
 ---
 
-## 签名生成
 
 ```
 # 为地址生成唯一字节签名
@@ -410,7 +334,6 @@ idapro_find_xref_signatures(addrs=["0x405000"])
 
 ---
 
-## 进制转换
 
 ```
 # 十六进制 → 十进制
@@ -423,13 +346,9 @@ idapro_int_convert(inputs=["4198400"])
 idapro_int_convert(inputs=["0xDEAD", "0xBEEF", "12345"])
 ```
 
-> ⚠️ **永远用这个工具做进制转换，不要自己算！**
 
 ---
 
-## 导出与脚本
-
-### 导出函数
 
 ```
 # JSON 格式
@@ -442,7 +361,6 @@ idapro_export_funcs(addrs=["main", "sub_401000"], format="c_header")
 idapro_export_funcs(addrs=["main", "sub_401000"], format="prototypes")
 ```
 
-### 执行 Python 脚本
 
 ```
 # 在 IDA 上下文中执行 Python
@@ -457,9 +375,6 @@ idapro_py_eval(code="import ida_funcs; f=ida_funcs.get_func(0x401000); print(f.s
 
 ---
 
-## 典型分析流程
-
-### 恶意软件分析
 
 ```text
 1. survey_binary → 看导入（网络API? 加密? 注册表?）
@@ -470,7 +385,6 @@ idapro_py_eval(code="import ida_funcs; f=ida_funcs.get_func(0x401000); print(f.s
 6. set_comments + rename → 标注发现
 ```
 
-### 注册验证破解
 
 ```text
 1. find_regex("serial|license|register|valid") → 找验证相关字符串
@@ -480,7 +394,6 @@ idapro_py_eval(code="import ida_funcs; f=ida_funcs.get_func(0x401000); print(f.s
 5. patch_asm(条件跳转地址, "jmp always_pass") → patch
 ```
 
-### CTF 逆向
 
 ```text
 1. survey_binary → 确认架构和入口
@@ -490,7 +403,6 @@ idapro_py_eval(code="import ida_funcs; f=ida_funcs.get_func(0x401000); print(f.s
 5. 用 Python 辅助计算/解密 → 得到 flag
 ```
 
-### 漏洞分析
 
 ```text
 1. entity_query(kind="imports", filter="strcpy|sprintf|gets") → 找危险函数
@@ -502,14 +414,5 @@ idapro_py_eval(code="import ida_funcs; f=ida_funcs.get_func(0x401000); print(f.s
 
 ---
 
-## 常见错误与解决
 
-| 错误 | 原因 | 解决 |
 |------|------|------|
-| "No database bound" | 没有打开文件 | 执行 `open.ps1` |
-| "Failed to open database" | 旧库被锁 | `open.ps1` 自动降级到 Temp |
-| schema 校验失败 | MCP 客户端 BUG | 用 `open.ps1` 代替 `idalib_open` |
-| 工具超时 | 大文件分析中 | 加 `-TimeoutSeconds 600` |
-| "ERR:timeout" (start.ps1) | 服务器启动失败 | 检查 Python/idalib-mcp 安装 |
-| 进制转换错误 | 手动计算出错 | 用 `idapro_int_convert` |
-| 函数名找不到 | 名称不精确 | 用 `list_funcs` + filter 先搜索 |

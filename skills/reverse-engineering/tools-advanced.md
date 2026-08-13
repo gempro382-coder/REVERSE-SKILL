@@ -174,11 +174,6 @@ Free, open-source alternative to BinDiff, runs as IDA plugin.
 
 ## Deobfuscation Frameworks
 
-> OLLVM 脱密的完整工作流、变种生态和社区工具调研见 [ollvm-deobfuscation.md](references/ollvm-deobfuscation.md)。
-
-### d810-ng (IDA) — 本地首选
-
-D-810 的现代维护版（Next Generation），集成 **Z3 SMT** 求解器，覆盖 OLLVM / Tigress / Hodur(PlugX) / Approov 多种变种。
 
 ```text
 Capabilities:
@@ -198,9 +193,6 @@ Installation: clone → 复制到 IDA plugins 目录 → Ctrl-Shift-D 加载
 Source: https://github.com/w00tzenheimer/d810-ng
 ```
 
-### obpo-plugin (IDA) — 效果最强，云插件
-
-基于 Hex-Rays **microcode** + 数据流跟踪 + 程序切片 + 混合执行（concolic）。社区公认效果最强之一。
 
 ```text
 - 在 microcode 层优化反编译输出（不是改 ASM）
@@ -211,9 +203,6 @@ Source: https://github.com/w00tzenheimer/d810-ng
 Source: https://github.com/obpo-project/obpo-plugin
 ```
 
-### ollvm-unflattener — Miasm 纯脚本
-
-无 IDA 依赖，基于 Miasm 符号执行，BFS 多层处理，支持 x86/x64 Win/Linux。
 
 ```bash
 git clone https://github.com/cdong1012/ollvm-unflattener
@@ -223,15 +212,9 @@ python unflattener -i <input> -o <output> -t <func_addr> -a   # -a 自动多层
 
 ### ollvm-breaker (Binary Ninja)
 
-Binary Ninja 去平坦化，仓库自带 Android 加固样本 `libvdog.so` 实战。Source: amimo/ollvm-breaker
-
-### DeObfBR — BR 混淆专项
-
-专门去除 Goron/Arkari 风格的 BR（间接分支）混淆。简易技巧：设置数据段只读可部分对抗。Source: Mrack/DeObfBR
 
 ### deollvm — ARM64 Unicorn
 
-无 IDA 时处理 ARM64 .so 的备选，基于 Unicorn。Source: GeT1t/deollvm
 
 ### GOOMBA (Ghidra)
 

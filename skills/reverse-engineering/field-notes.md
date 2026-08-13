@@ -408,7 +408,6 @@ print(f"admin_session={payload_b64}.{sig_b64}")
 ## Web Phishing Infrastructure
 
 ### Phishing Panel: {target_domain_a} / {target_domain_b}
-**完整分析**: [phishing-case-study.md](phishing-case-study.md)
 
 Two-server phishing infrastructure impersonating a government agency. Full victim control system with server-driven status code redirection.
 
@@ -436,25 +435,10 @@ Two-server phishing infrastructure impersonating a government agency. Full victi
 | {target_domain_2} | {target_ip_2} | Frontend (phishing pages) |
 
 
-
 ---
 
-## 分析前预判：文件伪装与名字欺骗
 
-### 文件后缀不可信
-
-**核心原则：永远用 `file` 命令或 magic bytes 判断文件类型，不要相信后缀名。**
-
-常见伪装手法：
-
-| 伪装后缀 | 实际类型 | 目的 |
 |---------|---------|------|
-| `.sh` | ELF 二进制 | 让人以为是脚本，降低警惕 |
-| `.txt` | PE/ELF | 绕过简单的文件类型过滤 |
-| `.jpg`/`.png` | 可执行文件或压缩包 | 隐藏在图片中 |
-| `.dll` | 实际是 .NET assembly | 混淆分析方向 |
-| `.so` | 实际是加密 payload | 需要先解密 |
-| 无后缀 | 任何类型 | Linux 下常见 |
 
 ```bash
 # 正确做法：用 file 命令
@@ -466,36 +450,11 @@ xxd suspicious_file.sh | head -1
 # 7f454c46 = ELF magic
 ```
 
-### 文件名不可信
 
-**"DriverLoader" 不一定加载驱动，"Updater" 不一定更新。**
-
-常见名字欺骗：
-
-| 文件名暗示 | 实际行为 |
 |-----------|---------|
-| `DriverLoader` | 可能是 ptrace 注入器 / 进程 hook |
-| `SystemService` | 可能是后门 / C2 agent |
-| `Updater` / `Update` | 可能是 dropper / 下载器 |
-| `Helper` / `Assistant` | 可能是提权工具 |
-| `lib*.so` | 可能是注入 payload |
 
-**分析时应该：**
-- 忽略文件名暗示，按实际代码行为判断
-- 关注 `mmap`、`ptrace`、`/proc/self/mem` 等系统调用
-- 如果看到"加载驱动"但没有 `insmod`/`init_module` 调用，说明名不副实
 
-### 静态分析不够时的动态补充
-
-纯静态分析只能看到代码骨架。以下场景必须配合动态分析：
-
-| 场景 | 推荐动态方法 |
 |------|-------------|
-| 代码有解密/解压逻辑 | 在解密后下断点，dump 明文 |
-| 大量间接调用（函数指针表） | strace/ltrace 跟踪实际调用 |
-| 疑似反调试 | 先 strace 看 ptrace 调用 |
-| 内嵌 shellcode/payload | QEMU 用户态模拟执行 |
-| 网络通信协议未知 | tcpdump/Wireshark 抓包 |
 
 ```bash
 # strace 跟踪系统调用（重点关注）
@@ -512,24 +471,7 @@ strace ./binary 2>&1 | grep ptrace
 # 如果看到 ptrace(PTRACE_TRACEME, ...) 说明有反调试
 ```
 
-### 进程注入/保护壳类样本的常见模式
 
-这类样本（如 `LinYuDriverLoader`）通常：
-
-1. **不是真正加载内核驱动**（需要 root 权限，大多数场景没有）
-2. **实际行为是进程注入**：
-   - `ptrace` attach 到目标进程
-   - 通过 `/proc/<pid>/mem` 读写目标内存
-   - `mmap` 映射 shellcode 到目标进程空间
-3. **内嵌加密 payload**：
-   - 运行时解密一段 shellcode
-   - 解密后的 payload 才是真正的 hook 代码
-4. **反调试保护**：
-   - `ptrace(PTRACE_TRACEME)` 自追踪
-   - 时间检测（`clock_gettime` 前后对比）
-   - `/proc/self/status` 检查 TracerPid
-
-**分析策略**：
 ```text
 1. file 命令确认真实类型
 2. strings 看有没有明显的路径/库名/错误信息

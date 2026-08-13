@@ -1,13 +1,7 @@
-# 浏览器与桌面自动化速查
 
-> 覆盖 Playwright（浏览器自动化）和 OpenReverse（Windows 桌面自动化）的常用命令与模式。
-> 面向渗透测试、逆向工程、自动化采集场景。
 
 ---
 
-## Playwright / agent-browser 命令速查
-
-### 导航与生命周期
 
 ```bash
 # 打开页面
@@ -20,7 +14,6 @@ agent-browser wait --load networkidle
 agent-browser close
 ```
 
-### 页面快照
 
 ```bash
 # 完整无障碍树（调试用）
@@ -30,7 +23,6 @@ agent-browser snapshot
 agent-browser snapshot -i
 ```
 
-### 元素交互
 
 ```bash
 # 点击
@@ -52,7 +44,6 @@ agent-browser scroll down 500
 agent-browser scroll up 300
 ```
 
-### 信息获取
 
 ```bash
 # 获取元素文本
@@ -65,7 +56,6 @@ agent-browser get title
 agent-browser get url
 ```
 
-### 等待策略
 
 ```bash
 # 等待元素出现
@@ -83,9 +73,6 @@ agent-browser wait --load domcontentloaded
 
 ---
 
-## 渗透测试常用模式
-
-### 自动化登录
 
 ```bash
 agent-browser open "https://target.com/login"
@@ -97,7 +84,6 @@ agent-browser wait --load networkidle
 agent-browser get url                    # 确认是否跳转到后台
 ```
 
-### XSS Payload 注入
 
 ```bash
 agent-browser open "https://target.com/search"
@@ -108,7 +94,6 @@ agent-browser wait --load networkidle
 agent-browser snapshot                   # 检查 payload 是否被渲染
 ```
 
-### 表单批量提交（配合脚本）
 
 ```powershell
 $payloads = @("' OR 1=1--", "<img src=x onerror=alert(1)>", "{{7*7}}")
@@ -123,7 +108,6 @@ foreach ($p in $payloads) {
 agent-browser close
 ```
 
-### Cookie / LocalStorage 提取
 
 ```bash
 # 通过 Playwright API（Node.js 脚本模式）
@@ -151,7 +135,6 @@ const { chromium } = require('playwright');
 })();
 ```
 
-### 截图取证
 
 ```bash
 # agent-browser 模式
@@ -167,9 +150,6 @@ await page.screenshot({ path: 'evidence.png', fullPage: true });
 
 ---
 
-## Playwright Node.js API 速查
-
-### 基础模板
 
 ```javascript
 const { chromium } = require('playwright');
@@ -192,7 +172,6 @@ const { chromium } = require('playwright');
 })();
 ```
 
-### 常用选择器
 
 ```javascript
 // CSS 选择器
@@ -210,7 +189,6 @@ await page.click('xpath=//button[@type="submit"]');
 await page.click('form >> input[type="submit"]');
 ```
 
-### 网络拦截
 
 ```javascript
 // 拦截请求
@@ -235,7 +213,6 @@ await page.route('**/api/user', async route => {
 });
 ```
 
-### 等待与断言
 
 ```javascript
 // 等待元素
@@ -258,16 +235,9 @@ await Promise.all([
 
 ---
 
-## OpenReverse 桌面自动化速查
 
-### 模式选择
-
-| 模式 | 命令前缀 | 适合场景 |
 |------|---------|---------|
-| UIA | `openreverse uia ...` | 标准 Windows 控件（按钮、文本框、列表） |
-| CUA | `openreverse cua ...` | 复杂/非标准 GUI（IDA 反汇编视图、自定义渲染界面） |
 
-### UIA 模式（结构化控件操作）
 
 ```bash
 # 启动应用
@@ -289,7 +259,6 @@ openreverse uia menu "File > Open"
 openreverse uia get-text "Edit:Output"
 ```
 
-### CUA 模式（视觉驱动交互）
 
 ```bash
 # 截图当前屏幕
@@ -310,7 +279,6 @@ openreverse cua key "F5"        # IDA: Decompile
 openreverse cua key "F9"        # x64dbg: Run
 ```
 
-### 网络观察（mitmproxy）
 
 ```bash
 # 启动代理模式观察
@@ -331,9 +299,6 @@ openreverse network stop
 
 ---
 
-## 逆向工具自动化组合
-
-### IDA Pro 自动化（OpenReverse + ida-reverse）
 
 ```text
 场景：批量分析多个样本
@@ -348,7 +313,6 @@ openreverse network stop
    f. openreverse cua key "ctrl+w"        # 关闭数据库
 ```
 
-### x64dbg 自动化调试
 
 ```text
 场景：自动化断点设置与数据采集
@@ -366,21 +330,11 @@ openreverse network stop
 
 ---
 
-## 常见问题与解决
 
-| 问题 | 原因 | 解决 |
 |------|------|------|
-| agent-browser 无响应 | 进程泄漏 | 先 `agent-browser close`，再重新 open |
-| 元素引用失效 | 页面已刷新 | 重新 `snapshot -i` 获取新引用 |
-| 填表无效 | JS 监听 input 事件 | 用 `type` 代替 `fill` |
-| HTTPS 证书错误 | 自签名证书 | Playwright: `ignoreHTTPSErrors: true` |
-| 页面加载超时 | 网络慢/资源多 | 增加 timeout 或用 `domcontentloaded` |
-| UIA 找不到控件 | 应用使用自绘控件 | 切换到 CUA 模式 |
-| CUA 点击偏移 | 分辨率/DPI 不匹配 | 先 screenshot 确认坐标 |
 
 ---
 
-## 安装与依赖
 
 ### Playwright
 
@@ -415,11 +369,5 @@ npm run doctor:network
 
 ---
 
-## 相关资源
 
-| 资源 | 说明 | 链接 |
 |------|------|------|
-| Playwright 官方文档 | API 参考 | https://playwright.dev/docs/intro |
-| OpenReverse | 桌面自动化框架 | https://github.com/zhexulong/openreverse |
-| mitmproxy | HTTP/HTTPS 代理 | https://mitmproxy.org/ |
-| Windows UI Automation | UIA 文档 | https://learn.microsoft.com/en-us/windows/win32/winauto/entry-uiauto-win32 |

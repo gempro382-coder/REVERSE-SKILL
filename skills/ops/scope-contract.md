@@ -1,10 +1,4 @@
-# 通用 Scope 契约（任务启动硬门槛）
 
-> **MUST**：任何安全/逆向/渗透任务在 **ACT 之前** 在用户项目或 `work/<case>/` 落地 `scope.md`。  
-> 无 scope → 只允许读文档/路由，**禁止** 对目标主动扫描、Hook、利用。  
-> 模板可复制；字段名保持英文键，便于脚本校验。
-
-## 如何初始化
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File skills\scripts\case-init.ps1 -Hint "<任务一句话>" -CaseName "my-case"
@@ -12,7 +6,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File skills\scripts\case-init.ps1
 # 从其他目录调用 skill 时显式指定：-ProjectRoot "C:\path\to\analysis-project"
 ```
 
-## scope.md 完整模板
 
 ```markdown
 # Case Scope
@@ -68,7 +61,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File skills\scripts\case-init.ps1
   - [ ] out_of_scope reviewed
 ```
 
-## 路由挂钩（AI 必须执行）
 
 ```text
 RULES / MASTER-ROUTING / SKILL:
@@ -78,16 +70,5 @@ RULES / MASTER-ROUTING / SKILL:
   4) ready_for_act = true → 打开 PRIMARY SKILL.md → ACT
 ```
 
-## network_profile 速查
 
-| mode | 允许 | 禁止 |
 |------|------|------|
-| `offline` | 静态分析、本地文件、模拟 | 任意外连、公网 RPC |
-| `lab_only` | lab/CTF 靶机网段 | 生产/未授权 IP |
-| `authorized_target_only` | in_scope 列表 | 列表外资产 |
-| `unrestricted_lab` | 隔离实验网（书面） | 互联网生产 |
-
-## 特色
-
-- 纯 Markdown，**无数据库**  
-- 与 `tool-index` / bootstrap 正交：scope 管「能不能打」，tool-index 管「用什么打」

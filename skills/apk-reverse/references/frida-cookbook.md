@@ -1,13 +1,7 @@
-# Frida 实战脚本速查
 
-> 精选自 [awesome-frida](https://github.com/dweinstein/awesome-frida)、[Frida-Mobile-Scripts](https://github.com/m0bilesecurity/Frida-Mobile-Scripts)、[frida-codeshare-scripts](https://github.com/zengfr/frida-codeshare-scripts) 等开源项目。
-> 按场景分类，直接复制使用。
 
 ---
 
-## 通用 Hook 模板
-
-### Hook 任意 Java 方法
 
 ```javascript
 Java.perform(function() {
@@ -31,7 +25,6 @@ Java.perform(function() {
 });
 ```
 
-### Hook 构造函数
 
 ```javascript
 Java.perform(function() {
@@ -43,7 +36,6 @@ Java.perform(function() {
 });
 ```
 
-### 枚举所有方法
 
 ```javascript
 Java.perform(function() {
@@ -57,9 +49,6 @@ Java.perform(function() {
 
 ---
 
-## 加密/签名 Hook
-
-### Hook AES 加解密
 
 ```javascript
 Java.perform(function() {
@@ -145,9 +134,6 @@ Java.perform(function() {
 
 ---
 
-## 网络请求 Hook
-
-### Hook OkHttp3 请求/响应
 
 ```javascript
 Java.perform(function() {
@@ -170,7 +156,6 @@ Java.perform(function() {
 });
 ```
 
-### Hook URL 连接
 
 ```javascript
 Java.perform(function() {
@@ -201,9 +186,6 @@ Java.perform(function() {
 
 ---
 
-## 绕过类 Hook
-
-### 通用 SSL Pinning 绕过
 
 ```javascript
 Java.perform(function() {
@@ -246,7 +228,6 @@ Java.perform(function() {
 });
 ```
 
-### 通用 Root 检测绕过
 
 ```javascript
 Java.perform(function() {
@@ -283,7 +264,6 @@ Java.perform(function() {
 });
 ```
 
-### 反调试绕过
 
 ```javascript
 Java.perform(function() {
@@ -309,7 +289,6 @@ Java.perform(function() {
 });
 ```
 
-### 模拟器检测绕过
 
 ```javascript
 Java.perform(function() {
@@ -332,7 +311,6 @@ Java.perform(function() {
 
 ---
 
-## 数据存储 Hook
 
 ### Hook SharedPreferences
 
@@ -375,9 +353,6 @@ Java.perform(function() {
 
 ---
 
-## 脱壳 Hook
-
-### 通用 DEX Dump
 
 ```javascript
 Java.perform(function() {
@@ -416,7 +391,6 @@ Java.perform(function() {
 
 ---
 
-## 实用工具函数
 
 ```javascript
 // 字节数组转十六进制
@@ -460,13 +434,5 @@ function findInstances(className) {
 
 ---
 
-## 参考资源
 
-| 资源 | 说明 | 链接 |
 |------|------|------|
-| Frida 官方文档 | API 参考 | https://frida.re/docs/ |
-| Frida CodeShare | 社区脚本分享 | https://codeshare.frida.re/ |
-| awesome-frida | 资源大全 | https://github.com/dweinstein/awesome-frida |
-| frida-codeshare-scripts | 全网最全脚本收集 | https://github.com/zengfr/frida-codeshare-scripts |
-| Objection | Frida 封装工具 | https://github.com/sensepost/objection |
-| r2frida | radare2 + Frida 集成 | https://github.com/nowsecure/r2frida |

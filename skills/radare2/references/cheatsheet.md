@@ -1,6 +1,4 @@
-# radare2 速查表
 
-## 基础侦察
 
 ```powershell
 rabin2 -I sample.exe
@@ -10,7 +8,6 @@ rabin2 -E sample.exe
 rabin2 -zz sample.exe
 ```
 
-## 进入交互
 
 ```powershell
 r2 sample.exe
@@ -27,7 +24,6 @@ pdf
 q
 ```
 
-## 字符串和引用
 
 ```text
 iz~http
@@ -37,7 +33,6 @@ s <addr>
 pdf
 ```
 
-## 常用查看
 
 ```text
 px 64
@@ -59,13 +54,11 @@ wx 9090
 wq
 ```
 
-## 非交互模式
 
 ```powershell
 r2 -A -q -c "afl;iz;ii;q" sample.exe
 ```
 
-## 其他工具
 
 ### rasm2
 

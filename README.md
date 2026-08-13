@@ -3,10 +3,8 @@
 </p>
 
 <h1 align="center">reverse-skill</h1>
-<h3 align="center">Cybersecurity Skills Router · 逆向技能路由包</h3>
 
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.2em; color: #777;">Navigate the dark waters, sail against the stream.</em></p>
-
 
 
 <br/>
@@ -24,7 +22,6 @@
 </p>
 
 <p align="center">
-  🌐 <a href="README_zh.md">中文</a> ·
   <a href="https://reverse.apivix.com/">Project website</a> ·
   <a href="https://reverse.apivix.com/docs/">Online tutorial</a>
 </p>
@@ -255,7 +252,6 @@ Contributions are welcome! Fork the repo, create a feature branch, and open a PR
 3. `git commit -m 'Add some AmazingFeature'`
 4. `git push origin feature/AmazingFeature`
 5. Open a Pull Request
-
 
 
 ## License

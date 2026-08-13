@@ -1,12 +1,7 @@
-# ELF 二进制深度分析参考
 
-> 逆向 Linux/Android ELF 文件时的结构解析、反分析对抗识别和分析技巧。
 
 ---
 
-## ELF 结构速查
-
-### 文件头 (ELF Header)
 
 ```text
 偏移  大小  字段              说明
@@ -22,7 +17,6 @@
 0x3C  2    e_shnum           节头数量
 ```
 
-### 程序头 (Program Header)
 
 ```text
 类型值  名称       说明
@@ -36,41 +30,14 @@
 0x6474e552 PT_GNU_RELRO     只读重定位
 ```
 
-### 常见节 (Sections)
 
-| 节名 | 说明 |
 |------|------|
-| `.text` | 代码段 |
-| `.rodata` | 只读数据（字符串常量） |
-| `.data` | 已初始化全局变量 |
-| `.bss` | 未初始化全局变量 |
-| `.plt` / `.got` | 动态链接跳转表 |
-| `.init_array` | 构造函数指针数组 |
-| `.fini_array` | 析构函数指针数组 |
-| `.dynamic` | 动态链接信息 |
-| `.symtab` / `.dynsym` | 符号表 |
-| `.strtab` / `.dynstr` | 字符串表 |
 
 ---
 
-## 反分析手法识别
 
-### 常见 ELF 反分析技术
-
-| 手法 | 特征 | 对抗方式 |
 |------|------|---------|
-| 损坏程序头 | PHDR 填充垃圾数据（如 0x0a） | 手动修复或忽略损坏的 PHDR |
-| 无 section header | `e_shoff = 0`, `e_shnum = 0` | 只依赖程序头分析，不依赖 section |
-| 去符号 (strip) | 无 `.symtab`，函数名全丢 | GoReSym(Go) / 签名匹配 / FLIRT |
-| 静态链接 | 无 `.dynamic`，体积巨大 | 用 FLIRT/Lumina 识别库函数 |
-| 伪装文件类型 | 后缀 .sh/.txt/.jpg | 用 `file` 命令 / magic bytes 判断 |
-| UPX 加壳 | 包含 `UPX!` 标记 | `upx -d` 脱壳 |
-| 自定义壳 | 入口点跳转到解压代码 | 动态运行到 OEP 后 dump |
-| 反调试 | ptrace(TRACEME) | LD_PRELOAD hook / patch |
-| 反虚拟机 | 检查 /proc/cpuinfo | 修改 cpuinfo 或 hook 读取 |
-| 代码加密 | 运行时解密 .text | 断点在解密后 dump |
 
-### 识别自解压/自修改代码
 
 ```text
 特征：
@@ -88,24 +55,9 @@
 
 ---
 
-## ARM64 (AArch64) 逆向速查
 
-### 寄存器
-
-| 寄存器 | 用途 |
 |--------|------|
-| x0-x7 | 参数/返回值 |
-| x8 | 间接结果（syscall 号） |
-| x9-x15 | 临时寄存器 |
-| x16-x17 | IP0/IP1（PLT 跳转） |
-| x18 | 平台寄存器（Android: shadow call stack） |
-| x19-x28 | 被调用者保存 |
-| x29 (FP) | 帧指针 |
-| x30 (LR) | 链接寄存器（返回地址） |
-| SP | 栈指针 |
-| PC | 程序计数器 |
 
-### 常见指令模式
 
 ```text
 函数序言：
@@ -133,39 +85,19 @@
   ldr x0, [x1, #offset]        # 从内存加载
 ```
 
-### Linux ARM64 系统调用号
 
-| 号码 | 名称 | 说明 |
 |------|------|------|
-| 56 | openat | 打开文件 |
-| 63 | read | 读取 |
-| 64 | write | 写入 |
-| 57 | close | 关闭 |
-| 222 | mmap | 内存映射 |
-| 226 | mprotect | 修改内存权限 |
-| 117 | ptrace | 进程跟踪 |
-| 220 | clone | 创建进程/线程 |
-| 221 | execve | 执行程序 |
-| 93 | exit | 退出 |
-| 94 | exit_group | 退出进程组 |
 
 ---
 
-## 常见压缩/打包算法识别
 
-| 算法 | 识别特征 | 解压方式 |
 |------|---------|---------|
-| **LZSS** | 位流 + 字面量/匹配标记 | 自定义解压器（如本报告） |
 | **ZLIB/Deflate** | Magic: `78 01`/`78 9C`/`78 DA` | `zlib.decompress()` |
 | **GZIP** | Magic: `1F 8B` | `gzip -d` / `gunzip` |
 | **LZ4** | Magic: `04 22 4D 18` | `lz4 -d` |
 | **LZMA/XZ** | Magic: `FD 37 7A 58 5A 00` (XZ) | `xz -d` / `lzma -d` |
-| **Brotli** | 无固定 magic，看上下文 | `brotli -d` |
 | **Zstandard** | Magic: `28 B5 2F FD` | `zstd -d` |
-| **UPX** | 字符串 `UPX!` | `upx -d` |
-| **自定义** | 入口点有解压循环 | 逆向算法后写解压器 |
 
-### 识别自定义压缩的线索
 
 ```text
 1. 入口点附近有循环 + 位操作（移位、AND、OR）
@@ -177,9 +109,6 @@
 
 ---
 
-## Linux 进程注入技术
-
-### mmap + 代码注入
 
 ```text
 流程：
@@ -195,7 +124,6 @@
 - 最后 br/blr 到该地址
 ```
 
-### ptrace 注入
 
 ```text
 流程：
@@ -212,7 +140,6 @@
 - 写入 shellcode 到目标进程空间
 ```
 
-### /proc/self/mem 自修改
 
 ```text
 流程：
@@ -228,9 +155,6 @@
 
 ---
 
-## 分析大型 ELF 的策略
-
-对于 5MB+ 的大型二进制：
 
 ```text
 1. 快速侦察（5 分钟）
@@ -257,7 +181,6 @@
 
 ---
 
-## 工具命令速查
 
 ```bash
 # 基本信息

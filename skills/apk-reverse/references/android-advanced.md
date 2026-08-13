@@ -1,12 +1,7 @@
-# Android 高级逆向参考
 
-> 覆盖 Native SO 分析、Frida 高级用法、SSL Pinning 绕过、Root 检测对抗、加固脱壳、Flutter/React Native 逆向。
 
 ---
 
-## Native SO 逆向
-
-### 分析流程
 
 ```text
 1. 从 APK 中提取 .so 文件
@@ -32,7 +27,6 @@
    - 从 crypto 库函数（AES/MD5/SHA）调用追踪
 ```
 
-### JNI 函数注册
 
 ```c
 // 静态注册：函数名 = Java_包名_类名_方法名
@@ -53,7 +47,6 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 }
 ```
 
-### IDA 中分析 JNI 的技巧
 
 ```text
 1. 导入 JNI 类型库
@@ -71,9 +64,6 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
 ---
 
-## Frida 高级用法
-
-### Hook Native 函数
 
 ```javascript
 // Hook libc 函数
@@ -103,7 +93,6 @@ Interceptor.attach(targetFunc, {
 });
 ```
 
-### Hook Java 方法
 
 ```javascript
 Java.perform(function() {
@@ -130,7 +119,6 @@ Java.perform(function() {
 });
 ```
 
-### 内存搜索与修改
 
 ```javascript
 // 搜索内存中的字符串
@@ -155,9 +143,6 @@ Memory.patchCode(addr, 4, function(code) {
 
 ---
 
-## SSL Pinning 绕过
-
-### 通用方案（推荐）
 
 ```javascript
 // Frida 通用 SSL Pinning 绕过
@@ -187,18 +172,11 @@ Java.perform(function() {
 });
 ```
 
-### 各框架绕过
 
-| 框架 | 绕过方法 |
 |------|---------|
-| OkHttp3 | Hook `CertificatePinner.check` 返回空 |
-| Retrofit | 同 OkHttp（底层用 OkHttp） |
-| Volley | Hook `HurlStack` 的 SSL 工厂 |
-| Flutter | Hook `dart:io` 的 `SecurityContext`（需要特殊脚本） |
 | React Native | Hook `OkHttpClientProvider` |
 | WebView | Hook `WebViewClient.onReceivedSslError` |
 
-### Flutter 专项
 
 ```javascript
 // Flutter SSL Pinning 绕过（需要找到 ssl_verify_peer_cert 函数）
@@ -216,20 +194,10 @@ Memory.scan(flutter_lib, Module.findModuleByName("libflutter.so").size, pattern,
 
 ---
 
-## Root 检测绕过
 
-### 常见检测方式
-
-| 检测方式 | 绕过方法 |
 |---------|---------|
-| 检查 `/system/app/Superuser.apk` | Hook `File.exists()` 返回 false |
-| 检查 `su` 命令 | Hook `Runtime.exec()` 拦截 su 调用 |
-| 检查 `/proc/self/mounts` | Hook 文件读取，过滤 magisk 相关 |
 | SafetyNet/Play Integrity | Magisk Hide / Zygisk + Shamiko |
-| 检查 Magisk 包名 | 随机化 Magisk 包名 |
-| 检查 `/data/adb/` | Hook `opendir`/`access` |
 
-### Frida 通用 Root 绕过
 
 ```javascript
 Java.perform(function() {
@@ -259,20 +227,9 @@ Java.perform(function() {
 
 ---
 
-## 加固/壳识别与脱壳
 
-### 常见加固厂商
-
-| 加固 | 识别特征 | 脱壳方式 |
 |------|---------|---------|
-| 360 加固 | `libjiagu.so`、`com.stub.StubApp` | FART / Frida dump dex |
-| 腾讯乐固 | `libshell*.so`、`com.tencent.StubShell` | FART / BlackDex |
-| 梆梆加固 | `libDexHelper.so`、`com.secneo.apkwrapper` | FART |
-| 爱加密 | `libexec.so`、`s.h.e.l.l` | Frida dump |
-| 网易易盾 | `libnesec.so` | Frida dump |
-| 娜迦 | `libnaga.so` | Frida dump |
 
-### 通用脱壳方法
 
 ```text
 方法 1: FART（ART 环境脱壳）
@@ -293,7 +250,6 @@ Java.perform(function() {
 - 读取 dex 内存区域并保存
 ```
 
-### Frida DEX Dump 脚本
 
 ```javascript
 Java.perform(function() {
@@ -312,7 +268,6 @@ Java.perform(function() {
 
 ---
 
-## React Native / Flutter 逆向
 
 ### React Native
 
@@ -337,29 +292,10 @@ Java.perform(function() {
 
 ---
 
-## 工具速查
 
-| 工具 | 用途 | 安装 |
 |------|------|------|
-| jadx | Java 反编译 | 已在 bootstrap 中 |
-| apktool | 解包/重打包 | 已在 bootstrap 中 |
-| Frida | 动态 Hook | `pip install frida-tools` |
-| Objection | Frida 封装（更易用） | `pip install objection` |
-| MobSF | 自动化移动安全分析 | Docker 部署 |
-| BlackDex | 免 root 脱壳 | APK 安装 |
-| FART | ART 脱壳 | 刷入 ROM 或 Frida 版 |
-| hermes-dec | Hermes 字节码反编译 | npm 安装 |
-| reFlutter | Flutter 逆向辅助 | pip 安装 |
-| Magisk + Shamiko | Root 隐藏 | 刷入 |
 
 ---
 
-## 参考资源
 
-| 资源 | 说明 | 链接 |
 |------|------|------|
-| OWASP MASTG | 移动安全测试指南 | https://mas.owasp.org/ |
-| FridaBypassKit | 通用绕过框架 | https://github.com/okankurtuluss/FridaBypassKit |
-| SSL-bypass | 通用 SSL Pinning 绕过 | https://github.com/0xCD4/SSL-bypass |
-| awesome-frida | Frida 资源合集 | https://github.com/dweinstein/awesome-frida |
-| Android Security Awesome | Android 安全资源 | https://github.com/ashishb/android-security-awesome |
